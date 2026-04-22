@@ -1,65 +1,83 @@
-import Image from "next/image";
+"use client";
+
+import { useMemo } from 'react';
+import { bubbleSortGenerator } from '@/lib/algorithms/bubbleSort';
+import { usePlayback } from '@/hooks/usePlayback';
+import { ArrayVisualizer } from '@/components/visualizers/ArrayVisualizer';
+import { PlaybackControls } from '@/components/ui/PlaybackControls';
 
 export default function Home() {
+  const initialArray = [9, 14, 5, 11, 3];
+  
+  const states = useMemo(() => {
+    const generator = bubbleSortGenerator(initialArray);
+    const result = [];
+    for (let state of generator) {
+      result.push(state);
+    }
+    return result;
+  }, []);
+
+  const {
+    currentState,
+    currentIndex,
+    totalSteps,
+    isPlaying,
+    setIsPlaying,
+    next,
+    prev,
+    reset
+  } = usePlayback(states, 800);
+
+  if (!currentState) return null;
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <main className="flex h-screen w-full overflow-hidden text-white font-sans">
+      
+      {/* Left Panel: The Story */}
+      <section className="w-1/2 h-full glass-panel border-r border-pewter overflow-y-auto p-12 flex flex-col">
+        <h4 className="text-xs font-bold tracking-widest text-pewter uppercase mb-4">Sorting Algorithms</h4>
+        <h1 className="text-5xl font-medium mb-6">Bubble Sort</h1>
+        
+        <p className="text-lg leading-relaxed text-cloud mb-8 opacity-90">
+          Bubble Sort is the simplest sorting algorithm that works by repeatedly swapping the adjacent elements if they are in the wrong order. 
+          This algorithm is not suitable for large data sets as its average and worst-case time complexity is quite high.
+        </p>
+        
+        <div className="bg-carbon border border-pewter rounded-md p-6 mb-12">
+          <h3 className="text-sm font-medium mb-4">Time Complexity</h3>
+          <div className="flex justify-between border-b border-pewter pb-2 mb-2"><span className="text-cloud">Best Case</span><span className="font-mono">O(n)</span></div>
+          <div className="flex justify-between border-b border-pewter pb-2 mb-2"><span className="text-cloud">Average Case</span><span className="font-mono">O(n²)</span></div>
+          <div className="flex justify-between"><span className="text-cloud">Worst Case</span><span className="font-mono">O(n²)</span></div>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+
+        <h2 className="text-2xl font-medium mb-4">Current Step Action</h2>
+        <div className="p-4 border-l-4 border-electric bg-electric/10 rounded-r-md">
+          <p className="text-lg">{currentState.description}</p>
         </div>
-      </main>
-    </div>
+      </section>
+
+      {/* Right Panel: The Lab */}
+      <section className="w-1/2 h-full glass-panel flex flex-col relative">
+        <div className="absolute top-8 right-8 text-xs font-bold tracking-widest text-pewter uppercase">The Lab</div>
+        
+        <div className="flex-1 flex flex-col justify-center items-center">
+          <ArrayVisualizer state={currentState} />
+        </div>
+
+        <div className="h-32 border-t border-pewter flex flex-col justify-center bg-carbon/50 backdrop-blur-md">
+          <PlaybackControls 
+            isPlaying={isPlaying}
+            onPlayPause={() => setIsPlaying(!isPlaying)}
+            onNext={next}
+            onPrev={prev}
+            onReset={reset}
+            isFinished={currentIndex === totalSteps - 1}
+            isStart={currentIndex === 0}
+          />
+        </div>
+      </section>
+      
+    </main>
   );
 }
