@@ -10,23 +10,19 @@ Build an interactive web application to help users learn and visualize algorithm
 * **Animation Engine (Graphs/Trees):** React Flow
 * **Deployment:** Vercel
 
-## Visual Theme & Design System (Tesla-Inspired)
-The application will adhere to a radically minimal, ascetic design system:
-* **Colors:** Predominantly Pure White (`#FFFFFF`) backgrounds and Carbon Dark (`#171A20`) text. Electric Blue (`#3E6AE1`) is used *exclusively* for primary CTAs and active interactive states (like the play button or highlighting the current sorting bar).
-* **Typography:** Universal Sans (or a similar geometric sans like Inter). Display variant for headings (up to 40px, weight 500), and Text variant for UI (14px, weight 400/500).
-* **Styling Rules:** ZERO shadows, ZERO gradients, ZERO decorative backgrounds. All interactive elements use a sharp 4px border-radius.
-* **Transitions:** Universal 0.33s cubic-bezier transitions for all interactive state changes (color, background).
-* **Elevation:** Handled via z-index, frosted glass (`rgba(255,255,255,0.75)`), or flat solid colors. No drop shadows.
+## Visual Theme & Design System (Tesla-Inspired Glassmorphism)
+The application adheres to the strict Tesla design system, enhanced for a learning environment:
+* **Dark Mode & Glassmorphism:** To inject life without violating the "no CSS gradients/no shadows" rule, the background will feature abstract, cinematic, dark-themed imagery or pure Carbon Dark (`#171A20`). UI panels will float above this using "Frost" level glassmorphism (`rgba(23,26,32,0.75)` with `backdrop-filter: blur`), providing depth through photography and translucency rather than CSS drop shadows.
+* **Colors:** Carbon Dark (`#171A20`) surfaces, Pure White (`#FFFFFF`) for primary text. Electric Blue (`#3E6AE1`) is used *exclusively* for primary CTAs and active interactive states (like the play button or highlighting the current sorting bar).
+* **Typography:** Universal Sans (or Inter). Display variant for headings (up to 40px, weight 500), and Text variant for UI (14px, weight 400/500).
+* **Styling Rules:** ZERO shadows, ZERO CSS gradients, ZERO decorative borders. All interactive elements use a sharp 4px border-radius.
+* **Transitions:** Universal 0.33s cubic-bezier transitions for all interactive state changes.
 
-## UI Layout (Minimalist IDE Style)
-The layout will mimic a code editor/IDE but rendered through the minimal design lens:
-* **Canvas Background:** Pure White (`#FFFFFF`) or Light Ash (`#F4F4F4`).
-* **Dividers:** Clean 1px lines using Cloud Gray (`#EEEEEE`). No panel shadows.
-* **Left Panel:** Sidebar menu for selecting algorithms (categorized by type: Sorting, Searching, Graphs). Navigation links use Graphite (`#393C41`), turning Carbon Dark (`#171A20`) on hover/active.
-* **Center Panel:** The main interactive visualizer canvas. Array bars and Graph nodes are flat shapes (no 3D effects). Playback controls are stark, flat buttons with 4px border-radius. The Play button will be Electric Blue (`#3E6AE1`).
-* **Right Panel:** Split vertically with a Cloud Gray divider.
-  * **Top:** The algorithm code with the currently executing line highlighted (e.g., using a subtle Light Ash background).
-  * **Bottom:** Variable states and step-by-step textual explanations in Graphite (`#393C41`).
+## UI Layout (The Split Brain)
+The layout splits the screen strictly in half to intertwine theory and practice:
+* **Left Panel ("The Story"):** A scrollable, premium article format. Explains the algorithm (introduction, time complexity, real-world examples). Contains inline action buttons (e.g., `[Simulate First Pass]`) that trigger the visualizer on the right. Ends with the raw implementation code.
+* **Right Panel ("The Lab"):** A fixed, non-scrolling massive visualizer canvas. Contains the array/graph visualizer, playback controls (Play, Pause, Speed), and a Sandbox Input to plug in custom arrays/nodes.
+* **Glassmorphic Execution:** The entire page sits over the cinematic dark background. The left and right panels are semi-transparent Frosted Glass panes separated by a delicate 1px `Pewter` (`#5C5E62`) line.
 
 ## Supported Algorithms (Initial Scope)
 * **Sorting Algorithms:** Bubble Sort, Merge Sort, Quick Sort.
