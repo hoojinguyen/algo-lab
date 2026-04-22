@@ -1,4 +1,4 @@
-import { bubbleSortGenerator } from '../bubbleSort';
+import { bubbleSortGenerator } from '../sorting/bubble-sort';
 
 describe('bubbleSortGenerator', () => {
   it('yields correct states for a simple array', () => {

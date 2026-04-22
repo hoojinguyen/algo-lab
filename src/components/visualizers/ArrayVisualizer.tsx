@@ -1,9 +1,9 @@
 "use client";
 
-import { AlgorithmState } from '@/lib/types';
+import { ArrayAlgorithmState } from '@/lib/types';
 import { useMemo } from 'react';
 
-export function ArrayVisualizer({ state }: { state: AlgorithmState }) {
+export function ArrayVisualizer({ state }: { state: ArrayAlgorithmState }) {
   const maxValue = useMemo(() => Math.max(...state.data), [state.data]);
 
   return (

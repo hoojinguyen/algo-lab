@@ -3,7 +3,7 @@
 import { use, useMemo, useState } from 'react';
 import { bubbleSortEntry } from '@/lib/algorithms/sorting/bubble-sort';
 import { usePlayback } from '@/hooks/usePlayback';
-import { ArrayVisualizer } from '@/components/visualizers/ArrayVisualizer';
+import { VisualizerPanel } from '@/components/visualizers/VisualizerPanel';
 import { PlaybackControls } from '@/components/ui/PlaybackControls';
 import { CodeBlock } from '@/components/ui/CodeBlock';
 
@@ -85,7 +85,7 @@ export default function LessonPage({ params }: { params: Promise<{ category: str
           <div className="mb-8 p-4 bg-bg-tertiary border border-border rounded-lg text-text-primary text-center min-h-[60px] min-w-[300px] flex items-center justify-center font-medium shadow-sm">
             {currentState.description}
           </div>
-          <ArrayVisualizer state={currentState} />
+          <VisualizerPanel type={entry.visualizerType} state={currentState} />
         </div>
 
         <div className="h-28 border-t border-border flex flex-col justify-center bg-bg-primary z-10">
