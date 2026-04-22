@@ -6,7 +6,8 @@ export const CATEGORIES: Category[] = [
     name: 'Sorting',
     section: 'fundamentals',
     icon: 'ArrowDownUp',
-    description: 'Algorithms that put elements of a list into an order.'
+    description: 'Algorithms that put elements of a list into an order.',
+    defaultAlgorithmId: 'bubble-sort'
   },
   {
     id: 'searching',
@@ -26,5 +27,5 @@ export const CATEGORIES: Category[] = [
   { id: 'string', name: 'String', section: 'fundamentals', icon: 'Type', description: 'Process and search within text strings' },
   { id: 'divide-conquer', name: 'Divide & Conquer', section: 'advanced', icon: 'Split', description: 'Recursively break down a problem into two or more sub-problems' },
   { id: 'union-find', name: 'Union-Find', section: 'data-structures', icon: 'Merge', description: 'Keep track of elements partitioned into disjoint sets' },
-  { id: 'ai-ml', name: 'AI / Machine Learning', section: 'intelligence', icon: 'Brain', description: 'Fundamental machine learning algorithms' }
+  { id: 'ai-ml', name: 'AI / Machine Learning', section: 'intelligence', icon: 'Brain', description: 'Fundamental machine learning algorithms', defaultAlgorithmId: 'linear-regression' }
 ];

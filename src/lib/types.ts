@@ -4,6 +4,7 @@ export interface Category {
   section: SectionLabel;
   icon: string;
   description: string;
+  defaultAlgorithmId?: string;
 }
 
 export interface AlgorithmConfig {

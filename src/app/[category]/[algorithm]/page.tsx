@@ -1,22 +1,19 @@
 "use client";
 
 import { use, useMemo, useState } from 'react';
-import { bubbleSortEntry } from '@/lib/algorithms/sorting/bubble-sort';
-import { linearRegressionEntry } from '@/lib/algorithms/ai-ml/linear-regression';
+import { ALGORITHM_REGISTRY } from '@/lib/algorithms/registry';
 import { usePlayback } from '@/hooks/usePlayback';
 import { VisualizerPanel } from '@/components/visualizers/VisualizerPanel';
 import { PlaybackControls } from '@/components/ui/PlaybackControls';
 import { CodeBlock } from '@/components/ui/CodeBlock';
 
-// Temporary map until registry is built with all algorithms
-const registry: Record<string, any> = {
-  'bubble-sort': bubbleSortEntry,
-  'linear-regression': linearRegressionEntry
-};
-
 export default function LessonPage({ params }: { params: Promise<{ category: string, algorithm: string }> }) {
   const resolvedParams = use(params);
-  const entry = registry[resolvedParams.algorithm];
+  const entry = ALGORITHM_REGISTRY[resolvedParams.algorithm];
+
+  // Validation: Ensure algorithm belongs to the category in the URL
+  const isValid = entry && entry.category === resolvedParams.category;
+  const currentEntry = isValid ? entry : null;
 
   const initialArray = useMemo(() => [9, 14, 5, 11, 3, 22, 1, 8], []);
   
@@ -31,16 +28,16 @@ export default function LessonPage({ params }: { params: Promise<{ category: str
   ], []);
 
   const states = useMemo(() => {
-    if (!entry) return [];
+    if (!currentEntry) return [];
     
     let generator;
-    if (entry.category === 'ai-ml') {
-      generator = entry.generator({ 
+    if (currentEntry.category === 'ai-ml') {
+      generator = currentEntry.generator({ 
         points: initialPoints, 
         hyperparameters: { learningRate: 0.01, maxIterations: 50 } 
       });
     } else {
-      generator = entry.generator(initialArray);
+      generator = currentEntry.generator(initialArray);
     }
     
     const result = [];
@@ -48,7 +45,7 @@ export default function LessonPage({ params }: { params: Promise<{ category: str
       result.push(state);
     }
     return result;
-  }, [entry, initialArray, initialPoints]);
+  }, [currentEntry, initialArray, initialPoints]);
 
   const {
     currentState,
@@ -61,8 +58,16 @@ export default function LessonPage({ params }: { params: Promise<{ category: str
     reset
   } = usePlayback(states, 500);
 
-  if (!entry || !currentState) {
-    return <div className="p-12 text-text-muted">Algorithm not found</div>;
+  if (!currentEntry || !currentState) {
+    return (
+      <div className="flex flex-col items-center justify-center h-full text-center p-12">
+        <h2 className="text-2xl font-semibold mb-2">Algorithm Not Found</h2>
+        <p className="text-text-muted mb-8">The algorithm you're looking for doesn't exist or isn't in this category.</p>
+        <Link href="/" className="px-6 py-2 bg-text-primary text-bg-primary rounded-lg font-medium hover:opacity-90 transition-opacity">
+          Return to Dashboard
+        </Link>
+      </div>
+    );
   }
 
   return (
@@ -72,25 +77,25 @@ export default function LessonPage({ params }: { params: Promise<{ category: str
         <div className="max-w-2xl mx-auto">
           <div className="flex gap-2 mb-6">
             <span className="px-2 py-1 text-xs font-mono bg-success/10 text-success border border-success/20 rounded">
-              Best: {entry.complexity.best}
+              Best: {currentEntry.complexity.best}
             </span>
             <span className="px-2 py-1 text-xs font-mono bg-warning/10 text-warning border border-warning/20 rounded">
-              Avg: {entry.complexity.average}
+              Avg: {currentEntry.complexity.average}
             </span>
             <span className="px-2 py-1 text-xs font-mono bg-error/10 text-error border border-error/20 rounded">
-              Worst: {entry.complexity.worst}
+              Worst: {currentEntry.complexity.worst}
             </span>
           </div>
 
-          <h1 className="text-4xl font-medium mb-6">{entry.name}</h1>
+          <h1 className="text-4xl font-medium mb-6">{currentEntry.name}</h1>
           
           <div className="prose prose-invert max-w-none text-text-secondary leading-relaxed mb-12">
-            <p>{entry.theory}</p>
+            <p>{currentEntry.theory}</p>
           </div>
 
           <div className="mb-12">
             <CodeBlock
-              code={entry.code}
+              code={currentEntry.code}
               activeLine={currentState.codeLine}
             />
           </div>
@@ -107,7 +112,7 @@ export default function LessonPage({ params }: { params: Promise<{ category: str
           <div className="mb-8 p-4 bg-bg-tertiary border border-border rounded-lg text-text-primary text-center min-h-[60px] min-w-[300px] flex items-center justify-center font-medium shadow-sm">
             {currentState.description}
           </div>
-          <VisualizerPanel type={entry.visualizerType} state={currentState} />
+          <VisualizerPanel type={currentEntry.visualizerType} state={currentState} />
         </div>
 
         <div className="h-28 border-t border-border flex flex-col justify-center bg-bg-primary z-10">

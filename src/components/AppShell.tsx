@@ -1,8 +1,27 @@
 "use client";
 
-import { Search, Settings, ArrowDownUp, Activity } from 'lucide-react';
+import { Search, Settings, ArrowDownUp, Activity, Brain, Network, Route, GitFork, TreeDeciduous, Link as LinkIcon, Grid3x3, Zap, Undo2, Type, Split, Merge } from 'lucide-react';
 import { useState } from 'react';
 import Link from 'next/link';
+import { CATEGORIES } from '@/lib/algorithms/categories';
+import { getAlgorithmsByCategory } from '@/lib/algorithms/registry';
+
+const ICON_MAP: Record<string, any> = {
+  ArrowDownUp,
+  Search,
+  Network,
+  Route,
+  GitFork,
+  TreeDeciduous,
+  Link: LinkIcon,
+  Grid3x3,
+  Zap,
+  Undo2,
+  Type,
+  Split,
+  Merge,
+  Brain
+};
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
@@ -15,27 +34,23 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           <Activity size={18} className="text-bg-primary" />
         </Link>
         
-        <div className="flex flex-col gap-4 flex-1">
-          <button 
-            className={`p-2 rounded-md transition-colors ${activeCategory === 'sorting' ? 'text-accent bg-bg-tertiary' : 'text-text-muted hover:text-text-primary hover:bg-bg-tertiary'}`}
-            onClick={() => setActiveCategory(activeCategory === 'sorting' ? null : 'sorting')}
-            title="Sorting"
-          >
-            <ArrowDownUp size={20} strokeWidth={1.75} />
-          </button>
-          <button 
-            className={`p-2 rounded-md transition-colors ${activeCategory === 'searching' ? 'text-accent bg-bg-tertiary' : 'text-text-muted hover:text-text-primary hover:bg-bg-tertiary'}`}
-            onClick={() => setActiveCategory(activeCategory === 'searching' ? null : 'searching')}
-            title="Searching"
-          >
-            <Search size={20} strokeWidth={1.75} />
-          </button>
+        <div className="flex flex-col gap-4 flex-1 overflow-y-auto no-scrollbar">
+          {CATEGORIES.map(cat => {
+            const Icon = ICON_MAP[cat.icon] || Activity;
+            return (
+              <button 
+                key={cat.id}
+                className={`p-2 rounded-md transition-colors ${activeCategory === cat.id ? 'text-accent bg-bg-tertiary' : 'text-text-muted hover:text-text-primary hover:bg-bg-tertiary'}`}
+                onClick={() => setActiveCategory(activeCategory === cat.id ? null : cat.id)}
+                title={cat.name}
+              >
+                <Icon size={20} strokeWidth={1.75} />
+              </button>
+            );
+          })}
         </div>
 
-        <div className="flex flex-col gap-4 mt-auto">
-          <button className="p-2 text-text-muted hover:text-text-primary">
-            <Search size={20} strokeWidth={1.75} />
-          </button>
+        <div className="flex flex-col gap-4 mt-auto pt-4">
           <button className="p-2 text-text-muted hover:text-text-primary">
             <Settings size={20} strokeWidth={1.75} />
           </button>
@@ -46,15 +61,23 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       {activeCategory && (
         <aside className="w-[200px] border-r border-border bg-bg-secondary flex flex-col z-10 transition-all duration-200">
           <div className="p-4 border-b border-border">
-            <h2 className="text-sm font-semibold capitalize">{activeCategory}</h2>
+            <h2 className="text-sm font-semibold capitalize">{activeCategory.replace('-', ' ')}</h2>
           </div>
           <div className="flex-1 overflow-y-auto no-scrollbar p-2 flex flex-col gap-1">
-            <Link 
-              href={`/${activeCategory}/bubble-sort`}
-              className="px-3 py-2 text-sm text-text-secondary hover:text-text-primary hover:bg-bg-tertiary rounded-md block"
-            >
-              Bubble Sort
-            </Link>
+            {getAlgorithmsByCategory(activeCategory).map(algo => (
+              <Link 
+                key={algo.id}
+                href={`/${activeCategory}/${algo.id}`}
+                className="px-3 py-2 text-sm text-text-secondary hover:text-text-primary hover:bg-bg-tertiary rounded-md block"
+              >
+                {algo.name}
+              </Link>
+            ))}
+            {getAlgorithmsByCategory(activeCategory).length === 0 && (
+              <div className="px-3 py-2 text-xs text-text-muted italic">
+                Coming soon...
+              </div>
+            )}
           </div>
         </aside>
       )}

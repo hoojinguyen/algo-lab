@@ -28,21 +28,33 @@ export default function Home() {
         <section>
           <h2 className="text-xl font-medium mb-6">Categories</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {CATEGORIES.map(cat => (
-              <Link 
-                key={cat.id}
-                href={`/${cat.id}/bubble-sort`}
-                className="bg-bg-secondary border border-border p-6 rounded-xl hover:border-text-muted transition-colors flex items-start gap-4 group"
-              >
-                <div className="p-3 bg-bg-tertiary rounded-lg group-hover:bg-accent/10 transition-colors">
-                  <Activity className="text-text-muted group-hover:text-accent transition-colors" size={24} />
-                </div>
-                <div>
-                  <h3 className="font-semibold mb-1">{cat.name}</h3>
-                  <p className="text-text-muted text-sm line-clamp-2">{cat.description}</p>
-                </div>
-              </Link>
-            ))}
+            {CATEGORIES.map(cat => {
+              const hasAlgorithms = !!cat.defaultAlgorithmId;
+              const href = hasAlgorithms ? `/${cat.id}/${cat.defaultAlgorithmId}` : '#';
+              
+              return (
+                <Link 
+                  key={cat.id}
+                  href={href}
+                  className={`bg-bg-secondary border border-border p-6 rounded-xl transition-all flex items-start gap-4 group ${!hasAlgorithms ? 'opacity-60 cursor-not-allowed' : 'hover:border-text-muted hover:shadow-lg'}`}
+                >
+                  <div className={`p-3 bg-bg-tertiary rounded-lg transition-colors ${hasAlgorithms ? 'group-hover:bg-accent/10' : ''}`}>
+                    <Activity className={`transition-colors ${hasAlgorithms ? 'text-text-muted group-hover:text-accent' : 'text-text-muted/40'}`} size={24} />
+                  </div>
+                  <div className="flex-1">
+                    <div className="flex items-center justify-between mb-1">
+                      <h3 className="font-semibold">{cat.name}</h3>
+                      {!hasAlgorithms && (
+                        <span className="text-[10px] font-bold uppercase tracking-wider text-text-muted/60 bg-bg-tertiary px-2 py-0.5 rounded border border-border">
+                          Coming Soon
+                        </span>
+                      )}
+                    </div>
+                    <p className="text-text-muted text-sm line-clamp-2">{cat.description}</p>
+                  </div>
+                </Link>
+              );
+            })}
           </div>
         </section>
       </div>
