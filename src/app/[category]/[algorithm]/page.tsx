@@ -2,6 +2,7 @@
 
 import { use, useMemo, useState } from 'react';
 import { bubbleSortEntry } from '@/lib/algorithms/sorting/bubble-sort';
+import { linearRegressionEntry } from '@/lib/algorithms/ai-ml/linear-regression';
 import { usePlayback } from '@/hooks/usePlayback';
 import { VisualizerPanel } from '@/components/visualizers/VisualizerPanel';
 import { PlaybackControls } from '@/components/ui/PlaybackControls';
@@ -9,7 +10,8 @@ import { CodeBlock } from '@/components/ui/CodeBlock';
 
 // Temporary map until registry is built with all algorithms
 const registry: Record<string, any> = {
-  'bubble-sort': bubbleSortEntry
+  'bubble-sort': bubbleSortEntry,
+  'linear-regression': linearRegressionEntry
 };
 
 export default function LessonPage({ params }: { params: Promise<{ category: string, algorithm: string }> }) {
@@ -18,15 +20,35 @@ export default function LessonPage({ params }: { params: Promise<{ category: str
 
   const initialArray = useMemo(() => [9, 14, 5, 11, 3, 22, 1, 8], []);
   
+  const initialPoints = useMemo(() => [
+    { id: '1', x: 1, y: 1.5 },
+    { id: '2', x: 2, y: 3.8 },
+    { id: '3', x: 3, y: 3.2 },
+    { id: '4', x: 4, y: 6.5 },
+    { id: '5', x: 5, y: 5.9 },
+    { id: '6', x: 6, y: 8.1 },
+    { id: '7', x: 7, y: 9.5 }
+  ], []);
+
   const states = useMemo(() => {
     if (!entry) return [];
-    const generator = entry.generator(initialArray);
+    
+    let generator;
+    if (entry.category === 'ai-ml') {
+      generator = entry.generator({ 
+        points: initialPoints, 
+        hyperparameters: { learningRate: 0.01, maxIterations: 50 } 
+      });
+    } else {
+      generator = entry.generator(initialArray);
+    }
+    
     const result = [];
     for (let state of generator) {
       result.push(state);
     }
     return result;
-  }, [entry, initialArray]);
+  }, [entry, initialArray, initialPoints]);
 
   const {
     currentState,
