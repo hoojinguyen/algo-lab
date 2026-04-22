@@ -7,12 +7,8 @@ interface CodeBlockProps {
   activeLine?: number;
 }
 
-// Minimal JS syntax highlighter — returns spans with colour classes
 function tokenise(line: string): React.ReactNode {
-  // Order matters: strings first, then keywords, then numbers, then comments
   const tokens: { text: string; type: string }[] = [];
-
-  // Split by recognisable patterns
   const re = /(".*?"|'.*?'|`.*?`|\/\/.*$|\b(function|return|let|const|var|if|else|for|while|of|new|this)\b|\b\d+\b)/g;
 
   let cursor = 0;
@@ -40,11 +36,11 @@ function tokenise(line: string): React.ReactNode {
   }
 
   return tokens.map((t, i) => {
-    let className = 'text-cloud';
-    if (t.type === 'keyword') className = 'text-electric font-semibold';
-    else if (t.type === 'string') className = 'text-amber-300';
-    else if (t.type === 'number') className = 'text-emerald-400';
-    else if (t.type === 'comment') className = 'text-pewter italic';
+    let className = 'text-text-primary';
+    if (t.type === 'keyword') className = 'text-accent font-semibold';
+    else if (t.type === 'string') className = 'text-warning';
+    else if (t.type === 'number') className = 'text-success';
+    else if (t.type === 'comment') className = 'text-text-muted italic';
     return <span key={i} className={className}>{t.text}</span>;
   });
 }
@@ -55,7 +51,8 @@ export function CodeBlock({ code, activeLine }: CodeBlockProps) {
 
   useEffect(() => {
     if (activeLine !== undefined && codeRef.current) {
-      const el = codeRef.current.querySelector(`[data-line="${activeLine}"]`);
+      // Fix: Used string concatenation instead of template literal to avoid parsing errors
+      const el = codeRef.current.querySelector("[data-line='" + activeLine + "']");
       if (el) {
         el.scrollIntoView({ behavior: 'smooth', block: 'center' });
       }
@@ -63,19 +60,17 @@ export function CodeBlock({ code, activeLine }: CodeBlockProps) {
   }, [activeLine]);
 
   return (
-    <div className="bg-carbon border border-pewter rounded-md overflow-hidden">
-      {/* Header bar */}
-      <div className="flex items-center gap-2 bg-pewter/20 border-b border-pewter px-4 py-2">
-        <span className="w-3 h-3 rounded-full bg-graphite" />
-        <span className="w-3 h-3 rounded-full bg-graphite" />
-        <span className="w-3 h-3 rounded-full bg-graphite" />
-        <span className="ml-4 text-xs font-bold text-pewter uppercase tracking-widest">Implementation</span>
+    <div className="bg-bg-secondary border border-border rounded-md overflow-hidden">
+      <div className="flex items-center gap-2 bg-bg-tertiary border-b border-border px-4 py-2">
+        <span className="w-3 h-3 rounded-full bg-border" />
+        <span className="w-3 h-3 rounded-full bg-border" />
+        <span className="w-3 h-3 rounded-full bg-border" />
+        <span className="ml-4 text-xs font-bold text-text-muted uppercase tracking-widest">Implementation</span>
       </div>
 
       <pre
         ref={codeRef}
-        className="overflow-auto max-h-72 p-4 text-sm font-mono leading-relaxed"
-        style={{ scrollbarWidth: 'thin', scrollbarColor: '#5C5E62 transparent' }}
+        className="overflow-auto max-h-72 p-4 text-sm font-mono leading-relaxed no-scrollbar"
       >
         {lines.map((line, idx) => {
           const lineNumber = idx + 1;
@@ -86,19 +81,17 @@ export function CodeBlock({ code, activeLine }: CodeBlockProps) {
               data-line={lineNumber}
               className={`flex gap-4 rounded-sm transition-all duration-200 ${
                 isActive
-                  ? 'bg-electric/15 border-l-2 border-electric -mx-4 px-3'
+                  ? 'bg-accent/10 border-l-2 border-accent -mx-4 px-3'
                   : '-mx-0'
               }`}
             >
-              {/* Line number gutter */}
               <span
                 className={`select-none shrink-0 w-6 text-right text-xs leading-relaxed ${
-                  isActive ? 'text-electric font-bold' : 'text-pewter'
+                  isActive ? 'text-accent font-bold' : 'text-text-muted'
                 }`}
               >
                 {lineNumber}
               </span>
-              {/* Code tokens */}
               <span className="flex-1">
                 {line ? tokenise(line) : <span>&nbsp;</span>}
               </span>
