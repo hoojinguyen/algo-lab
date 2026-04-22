@@ -106,11 +106,23 @@ export interface LinkedListAlgorithmState extends BaseAlgorithmState {
   cycleTarget?: string;
 }
 
+export type CellState = 'empty' | 'computing' | 'filled' | 'optimal' | 'conflict' | 'current';
+
+export interface MatrixAlgorithmState extends BaseAlgorithmState {
+  matrix: (number | string | null)[][];
+  rowHeaders?: string[];
+  colHeaders?: string[];
+  highlightedCells: { row: number; col: number; state: CellState }[];
+  pathCells?: { row: number; col: number }[];
+  currentCell?: { row: number; col: number };
+}
+
 export type AlgorithmState =
   | ArrayAlgorithmState
   | GraphAlgorithmState
   | TreeAlgorithmState
-  | LinkedListAlgorithmState;
+  | LinkedListAlgorithmState
+  | MatrixAlgorithmState;
 
 export type VisualizerType = 'array' | 'graph' | 'tree' | 'matrix' | 'scatter' | 'linked-list';
 export type SectionLabel = 'fundamentals' | 'advanced' | 'data-structures' | 'intelligence';
