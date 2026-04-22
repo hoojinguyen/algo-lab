@@ -4,4 +4,5 @@ export interface AlgorithmState {
   activeIndices: number[];
   swapped: boolean;
   data: number[];
+  codeLine?: number;
 }

@@ -13,7 +13,8 @@ export function* bubbleSortGenerator(initialArray: number[]): Generator<Algorith
         description: `Comparing ${arr[j]} and ${arr[j+1]}`,
         activeIndices: [j, j+1],
         swapped: false,
-        data: [...arr]
+        data: [...arr],
+        codeLine: 4
       };
 
       if (arr[j] > arr[j + 1]) {
@@ -28,7 +29,8 @@ export function* bubbleSortGenerator(initialArray: number[]): Generator<Algorith
           description: `Swapping ${arr[j]} and ${arr[j+1]}`,
           activeIndices: [j, j+1],
           swapped: true,
-          data: [...arr]
+          data: [...arr],
+          codeLine: 6
         };
       }
     }

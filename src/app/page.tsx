@@ -7,6 +7,7 @@ import { quickSortGenerator } from '@/lib/algorithms/quickSort';
 import { usePlayback } from '@/hooks/usePlayback';
 import { ArrayVisualizer } from '@/components/visualizers/ArrayVisualizer';
 import { PlaybackControls } from '@/components/ui/PlaybackControls';
+import { CodeBlock } from '@/components/ui/CodeBlock';
 
 type AlgorithmType = 'bubble' | 'merge' | 'quick';
 
@@ -157,11 +158,10 @@ export default function Home() {
         </div>
 
         <h2 className="text-2xl font-medium mb-4">Implementation</h2>
-        <div className="bg-carbon border border-pewter rounded-md p-6 overflow-x-auto">
-          <pre className="font-mono text-sm text-cloud leading-relaxed">
-            <code>{currentAlgoDetails.code}</code>
-          </pre>
-        </div>
+        <CodeBlock
+          code={currentAlgoDetails.code}
+          activeLine={currentState.codeLine}
+        />
       </section>
 
       {/* Right Panel: The Lab */}

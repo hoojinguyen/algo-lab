@@ -21,7 +21,8 @@ export function* quickSortGenerator(initialArray: number[]): Generator<Algorithm
       description: `Selecting pivot ${pivot}`,
       activeIndices: [high],
       swapped: false,
-      data: [...arr]
+      data: [...arr],
+      codeLine: 10
     };
 
     for (let j = low; j < high; j++) {
@@ -30,7 +31,8 @@ export function* quickSortGenerator(initialArray: number[]): Generator<Algorithm
         description: `Comparing ${arr[j]} with pivot ${pivot}`,
         activeIndices: [j, high],
         swapped: false,
-        data: [...arr]
+        data: [...arr],
+        codeLine: 13
       };
 
       if (arr[j] < pivot) {
@@ -45,7 +47,8 @@ export function* quickSortGenerator(initialArray: number[]): Generator<Algorithm
             description: `Swapping ${arr[i]} and ${arr[j]}`,
             activeIndices: [i, j],
             swapped: true,
-            data: [...arr]
+            data: [...arr],
+            codeLine: 15
           };
         }
       }
@@ -60,7 +63,8 @@ export function* quickSortGenerator(initialArray: number[]): Generator<Algorithm
       description: `Placing pivot ${arr[i + 1]} in its correct position`,
       activeIndices: [i + 1, high],
       swapped: true,
-      data: [...arr]
+      data: [...arr],
+      codeLine: 18
     };
 
     return i + 1;

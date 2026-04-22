@@ -26,7 +26,8 @@ export function* mergeSortGenerator(initialArray: number[]): Generator<Algorithm
         description: `Comparing ${leftArr[i]} and ${rightArr[j]}`,
         activeIndices: [left + i, mid + 1 + j],
         swapped: false,
-        data: [...arr]
+        data: [...arr],
+        codeLine: 12
       };
 
       if (leftArr[i] <= rightArr[j]) {
@@ -42,7 +43,8 @@ export function* mergeSortGenerator(initialArray: number[]): Generator<Algorithm
         description: `Placing ${arr[k]} into position`,
         activeIndices: [k],
         swapped: true,
-        data: [...arr]
+        data: [...arr],
+        codeLine: 13
       };
       
       k++;
@@ -55,7 +57,8 @@ export function* mergeSortGenerator(initialArray: number[]): Generator<Algorithm
         description: `Placing remaining ${arr[k]} into position`,
         activeIndices: [k],
         swapped: true,
-        data: [...arr]
+        data: [...arr],
+        codeLine: 15
       };
       i++;
       k++;
@@ -68,7 +71,8 @@ export function* mergeSortGenerator(initialArray: number[]): Generator<Algorithm
         description: `Placing remaining ${arr[k]} into position`,
         activeIndices: [k],
         swapped: true,
-        data: [...arr]
+        data: [...arr],
+        codeLine: 15
       };
       j++;
       k++;
