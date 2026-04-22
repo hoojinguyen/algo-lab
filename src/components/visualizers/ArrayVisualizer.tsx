@@ -1,41 +1,35 @@
 "use client";
 
-import { motion } from 'framer-motion';
 import { AlgorithmState } from '@/lib/types';
+import { useMemo } from 'react';
 
-interface ArrayVisualizerProps {
-  state: AlgorithmState;
-}
-
-export function ArrayVisualizer({ state }: ArrayVisualizerProps) {
-  if (!state || !state.data) return null;
-
-  const maxValue = Math.max(...state.data, 1);
+export function ArrayVisualizer({ state }: { state: AlgorithmState }) {
+  const maxValue = useMemo(() => Math.max(...state.data), [state.data]);
 
   return (
-    <div className="flex items-end justify-center h-64 gap-2 p-8">
-      {state.data.map((value, index) => {
-        const isActive = state.activeIndices.includes(index);
-        const heightPercentage = (value / maxValue) * 100;
+    <div className="flex items-end justify-center h-64 gap-2 px-8 w-full max-w-3xl">
+      {state.data.map((value, idx) => {
+        const isActive = state.activeIndices.includes(idx);
+        const height = `${(value / maxValue) * 100}%`;
         
+        let bgColor = 'bg-bg-tertiary border border-border';
+        if (isActive) {
+          bgColor = state.swapped ? 'bg-success' : 'bg-accent';
+        }
+
         return (
-          <motion.div
-            key={`${index}-${value}`} // Keys matter for layout animations, though here index might be better for swaps
-            layout
-            transition={{ type: "spring", stiffness: 300, damping: 30 }}
-            className={`w-12 rounded-t-sm flex items-end justify-center pb-2 ${
-              isActive 
-                ? state.swapped 
-                  ? 'bg-red-500 shadow-[0_0_15px_rgba(239,68,68,0.8)]' 
-                  : 'bg-electric shadow-[0_0_15px_rgba(62,106,225,0.8)]'
-                : 'bg-cloud'
-            }`}
-            style={{ height: `${heightPercentage}%` }}
+          <div 
+            key={idx} 
+            className="flex flex-col items-center justify-end h-full flex-1 group"
           >
-            <span className={`text-xs font-bold ${isActive ? 'text-white' : 'text-carbon'}`}>
+            <div className="mb-2 opacity-0 group-hover:opacity-100 transition-opacity text-text-muted text-xs font-mono">
               {value}
-            </span>
-          </motion.div>
+            </div>
+            <div 
+              className={`w-full rounded-t-sm transition-all duration-300 ease-out ${bgColor}`}
+              style={{ height }}
+            />
+          </div>
         );
       })}
     </div>
