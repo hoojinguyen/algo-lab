@@ -4,7 +4,7 @@ import { GraphVisualizer } from './GraphVisualizer';
 import { TreeVisualizer } from './TreeVisualizer';
 import { LinkedListVisualizer } from './LinkedListVisualizer';
 import { MatrixVisualizer } from './MatrixVisualizer';
-
+import { ScatterVisualizer } from './ScatterVisualizer';
 interface VisualizerPanelProps {
   type: VisualizerType;
   state: AlgorithmState;
@@ -22,6 +22,8 @@ export function VisualizerPanel({ type, state }: VisualizerPanelProps) {
       return <LinkedListVisualizer state={state as LinkedListAlgorithmState} />;
     case 'matrix':
       return <MatrixVisualizer state={state as MatrixAlgorithmState} />;
+    case 'scatter':
+      return <ScatterVisualizer state={state as any} />;
     default:
       return <div className="text-text-muted">Unsupported visualizer type: {type}</div>;
   }
