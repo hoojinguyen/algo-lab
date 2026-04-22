@@ -19,5 +19,11 @@ export const CATEGORIES: Category[] = [
   { id: 'shortest-path', name: 'Shortest Path', section: 'advanced', icon: 'Route', description: 'Find paths' },
   { id: 'mst', name: 'Minimum Spanning Tree', section: 'advanced', icon: 'GitFork', description: 'Connect nodes' },
   { id: 'tree', name: 'Tree', section: 'data-structures', icon: 'TreeDeciduous', description: 'Hierarchical data' },
-  { id: 'linked-list', name: 'Linked List', section: 'data-structures', icon: 'Link', description: 'Chained nodes' }
+  { id: 'linked-list', name: 'Linked List', section: 'data-structures', icon: 'Link', description: 'Chained nodes' },
+  { id: 'dynamic-programming', name: 'Dynamic Programming', section: 'advanced', icon: 'Grid3x3', description: 'Solve complex problems by breaking them down into simpler subproblems' },
+  { id: 'greedy', name: 'Greedy', section: 'advanced', icon: 'Zap', description: 'Make the locally optimal choice at each stage' },
+  { id: 'backtracking', name: 'Backtracking', section: 'advanced', icon: 'Undo2', description: 'Incrementally build candidates and abandon them if they cannot be completed' },
+  { id: 'string', name: 'String', section: 'fundamentals', icon: 'Type', description: 'Process and search within text strings' },
+  { id: 'divide-conquer', name: 'Divide & Conquer', section: 'advanced', icon: 'Split', description: 'Recursively break down a problem into two or more sub-problems' },
+  { id: 'union-find', name: 'Union-Find', section: 'data-structures', icon: 'Merge', description: 'Keep track of elements partitioned into disjoint sets' }
 ];
