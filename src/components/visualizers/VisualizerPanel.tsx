@@ -1,8 +1,9 @@
-import { AlgorithmState, VisualizerType, ArrayAlgorithmState, GraphAlgorithmState, TreeAlgorithmState, LinkedListAlgorithmState } from '@/lib/types';
+import { AlgorithmState, VisualizerType, ArrayAlgorithmState, GraphAlgorithmState, TreeAlgorithmState, LinkedListAlgorithmState, MatrixAlgorithmState } from '@/lib/types';
 import { ArrayVisualizer } from './ArrayVisualizer';
 import { GraphVisualizer } from './GraphVisualizer';
 import { TreeVisualizer } from './TreeVisualizer';
 import { LinkedListVisualizer } from './LinkedListVisualizer';
+import { MatrixVisualizer } from './MatrixVisualizer';
 
 interface VisualizerPanelProps {
   type: VisualizerType;
@@ -19,6 +20,8 @@ export function VisualizerPanel({ type, state }: VisualizerPanelProps) {
       return <TreeVisualizer state={state as TreeAlgorithmState} />;
     case 'linked-list':
       return <LinkedListVisualizer state={state as LinkedListAlgorithmState} />;
+    case 'matrix':
+      return <MatrixVisualizer state={state as MatrixAlgorithmState} />;
     default:
       return <div className="text-text-muted">Unsupported visualizer type: {type}</div>;
   }
