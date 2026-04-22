@@ -25,5 +25,6 @@ export const CATEGORIES: Category[] = [
   { id: 'backtracking', name: 'Backtracking', section: 'advanced', icon: 'Undo2', description: 'Incrementally build candidates and abandon them if they cannot be completed' },
   { id: 'string', name: 'String', section: 'fundamentals', icon: 'Type', description: 'Process and search within text strings' },
   { id: 'divide-conquer', name: 'Divide & Conquer', section: 'advanced', icon: 'Split', description: 'Recursively break down a problem into two or more sub-problems' },
-  { id: 'union-find', name: 'Union-Find', section: 'data-structures', icon: 'Merge', description: 'Keep track of elements partitioned into disjoint sets' }
+  { id: 'union-find', name: 'Union-Find', section: 'data-structures', icon: 'Merge', description: 'Keep track of elements partitioned into disjoint sets' },
+  { id: 'ai-ml', name: 'AI / Machine Learning', section: 'intelligence', icon: 'Brain', description: 'Fundamental machine learning algorithms' }
 ];

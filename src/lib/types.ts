@@ -117,12 +117,59 @@ export interface MatrixAlgorithmState extends BaseAlgorithmState {
   currentCell?: { row: number; col: number };
 }
 
+export interface DataPoint {
+  id: string;
+  x: number;
+  y: number;
+  label?: number;
+  predictedLabel?: number;
+  isCorrect?: boolean;
+}
+
+export interface Centroid {
+  id: string;
+  x: number;
+  y: number;
+  clusterId: number;
+  previousX?: number;
+  previousY?: number;
+}
+
+export interface BoundaryLine {
+  type: 'linear' | 'curve';
+  points: { x: number; y: number }[];
+  color: string;
+}
+
+export interface ScatterAlgorithmState extends BaseAlgorithmState {
+  points: DataPoint[];
+  boundaries?: BoundaryLine[];
+  centroids?: Centroid[];
+  regressionLine?: { slope: number; intercept: number };
+  costHistory?: number[];
+  iteration: number;
+  totalIterations: number;
+  weights?: number[];
+  highlightedPoints?: string[];
+}
+
+export interface MLGeneratorInput {
+  points: DataPoint[];
+  hyperparameters: {
+    learningRate?: number;
+    k?: number;
+    maxIterations?: number;
+    seed?: number;
+  };
+}
+
 export type AlgorithmState =
   | ArrayAlgorithmState
   | GraphAlgorithmState
   | TreeAlgorithmState
   | LinkedListAlgorithmState
-  | MatrixAlgorithmState;
+  | MatrixAlgorithmState
+  | ScatterAlgorithmState;
 
 export type VisualizerType = 'array' | 'graph' | 'tree' | 'matrix' | 'scatter' | 'linked-list';
 export type SectionLabel = 'fundamentals' | 'advanced' | 'data-structures' | 'intelligence';
