@@ -1,3 +1,124 @@
+# Dashboard Enhancements Implementation Plan
+
+> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
+
+**Goal:** Enhance the Dashboard Home with personalized learning progress, recently studied algorithms, and intelligent suggestions for what to study next.
+
+**Architecture:** A custom React hook (`useUserProgress`) will manage state synchronized with `localStorage`. The dashboard page will be updated to consume this hook, handle hydration, and render the new UI sections ("Up Next", "Recently Studied", and a dynamic "Your Progress" bar) based on the persisted user data.
+
+**Tech Stack:** Next.js (Client Components), TypeScript, Tailwind CSS v4, Lucide React
+
+---
+
+### Task 1: Create `useUserProgress` hook
+
+**Files:**
+- Create: `src/hooks/useUserProgress.ts`
+
+- [x] **Step 1: Write the hook implementation**
+
+Create the `useUserProgress.ts` file to handle `localStorage` synchronization safely. It includes hydration checks and logic for calculating completion percentage and suggesting the next algorithm.
+
+```typescript
+"use client";
+
+import { useState, useEffect } from 'react';
+import { CATEGORIES } from '@/lib/algorithms/categories';
+
+export interface UserProgress {
+  completedAlgorithms: string[];
+  recentlyStudied: string[];
+}
+
+export function useUserProgress() {
+  const [isMounted, setIsMounted] = useState(false);
+  const [progress, setProgress] = useState<UserProgress>({
+    completedAlgorithms: [],
+    recentlyStudied: []
+  });
+
+  useEffect(() => {
+    setIsMounted(true);
+    const stored = localStorage.getItem('algolab_progress');
+    if (stored) {
+      try {
+        setProgress(JSON.parse(stored));
+      } catch (e) {
+        console.error('Failed to parse progress', e);
+      }
+    }
+  }, []);
+
+  const saveProgress = (newProgress: UserProgress) => {
+    setProgress(newProgress);
+    localStorage.setItem('algolab_progress', JSON.stringify(newProgress));
+  };
+
+  const markCompleted = (id: string) => {
+    if (progress.completedAlgorithms.includes(id)) return;
+    saveProgress({
+      ...progress,
+      completedAlgorithms: [...progress.completedAlgorithms, id]
+    });
+  };
+
+  const addRecentlyStudied = (id: string) => {
+    const filtered = progress.recentlyStudied.filter(item => item !== id);
+    saveProgress({
+      ...progress,
+      recentlyStudied: [id, ...filtered].slice(0, 5)
+    });
+  };
+
+  // For Phase 1 we assume a total of 55 algorithms as per spec
+  const totalAlgorithms = 55; 
+  const completionPercentage = Math.round((progress.completedAlgorithms.length / totalAlgorithms) * 100) || 0;
+
+  const getSuggestedNext = () => {
+    // Suggestion logic: return the first default algorithm of the first category 
+    // that hasn't been completed.
+    for (const cat of CATEGORIES) {
+      if (cat.defaultAlgorithmId && !progress.completedAlgorithms.includes(cat.defaultAlgorithmId)) {
+        return {
+          id: cat.defaultAlgorithmId,
+          categoryId: cat.id,
+          name: cat.name + ' Algorithm' 
+        };
+      }
+    }
+    // Fallback if all are completed or no defaults exist
+    return { id: 'bubble-sort', categoryId: 'sorting', name: 'Bubble Sort' };
+  };
+
+  return {
+    isMounted,
+    progress,
+    markCompleted,
+    addRecentlyStudied,
+    getSuggestedNext,
+    completionPercentage,
+    totalAlgorithms
+  };
+}
+```
+
+- [ ] **Step 2: Commit**
+
+```bash
+git add src/hooks/useUserProgress.ts
+git commit -m "feat: add useUserProgress hook for tracking dashboard metrics"
+```
+
+### Task 2: Implement Dashboard UI Enhancements
+
+**Files:**
+- Modify: `src/app/page.tsx`
+
+- [x] **Step 1: Rewrite page.tsx**
+
+Update `page.tsx` to use the `useUserProgress` hook. Handle hydration by returning a blank skeleton while `isMounted` is false. Add the "Up Next" and "Recently Studied" sections.
+
+```tsx
 "use client";
 
 import { Activity, PlayCircle, Clock } from 'lucide-react';
@@ -132,3 +253,11 @@ export default function Home() {
     </div>
   );
 }
+```
+
+- [x] **Step 2: Commit**
+
+```bash
+git add src/app/page.tsx
+git commit -m "feat: implement dashboard enhancements (Up Next, Recently Studied, Progress)"
+```
