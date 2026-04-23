@@ -20,7 +20,7 @@ export default function LessonPage({ params }: { params: Promise<{ category: str
   const currentEntry = isValid ? entry : null;
 
   const { progress, markCompleted, addRecentlyStudied, isMounted } = useUserProgress();
-  const isCompleted = isMounted && currentEntry && progress.completedAlgorithms.includes(currentEntry.id);
+  const isCompleted = !!(isMounted && currentEntry && progress.completedAlgorithms.includes(currentEntry.id));
 
   useEffect(() => {
     if (currentEntry) {
@@ -150,16 +150,16 @@ export default function LessonPage({ params }: { params: Promise<{ category: str
               <div className="grid grid-cols-1 gap-3">
                 {currentEntry.leetcode.map((problem) => (
                   <a
-                    key={problem.id}
-                    href={`https://leetcode.com/problems/${problem.id}`}
+                    key={problem.title}
+                    href={problem.url}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="flex items-center justify-between p-4 bg-bg-secondary border border-border rounded-xl hover:border-accent transition-colors group"
                   >
                     <div className="flex items-center gap-4">
                       <span className={`px-2.5 py-1 rounded text-xs font-medium uppercase tracking-wider ${
-                        problem.difficulty === 'Easy' ? 'bg-success/10 text-success' :
-                        problem.difficulty === 'Medium' ? 'bg-warning/10 text-warning' :
+                        problem.difficulty === 'easy' ? 'bg-success/10 text-success' :
+                        problem.difficulty === 'medium' ? 'bg-warning/10 text-warning' :
                         'bg-error/10 text-error'
                       }`}>
                         {problem.difficulty}

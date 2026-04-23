@@ -1,8 +1,9 @@
-import { AlgorithmEntry, AlgorithmState } from '@/lib/algorithms/types';
+import { AlgorithmEntry, AlgorithmState } from '@/lib/types';
 export const jumpSearchEntry: AlgorithmEntry = {
-  id: 'jump-search', name: 'Jump Search', category: 'searching', visualizerType: 'bars', tags: ['block-search'],
-  complexity: { best: 'O(1)', average: 'O(√n)', worst: 'O(√n)' },
-  theory: 'Like Binary Search, Jump Search is a searching algorithm for sorted arrays. The basic idea is to check fewer elements.',
+  id: 'jump-search', name: 'Jump Search', category: 'searching', visualizerType: 'array', tags: ['block-search'],
+  complexity: { best: 'O(sqrt(n))', average: 'O(sqrt(n))', worst: 'O(sqrt(n))', space: 'O(1)' },
+  theory: 'Jump search works on sorted arrays. It checks fewer elements than linear search by jumping ahead by fixed steps.',
   code: '// Jump Search', leetcode: [],
-  *generator(initialArray: number[]): Generator<AlgorithmState> { yield { array: [...initialArray], activeIndices: [], description: 'Searching', codeLine: 1 }; }
+  stable: true,
+  *generator(initialArray: number[]): Generator<AlgorithmState> { yield { data: [...initialArray], activeIndices: [], description: 'Searching', codeLine: 1, step: 0, swapped: false }; }
 };

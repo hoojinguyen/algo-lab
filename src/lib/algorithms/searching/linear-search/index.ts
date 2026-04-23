@@ -1,8 +1,9 @@
-import { AlgorithmEntry, AlgorithmState } from '@/lib/algorithms/types';
+import { AlgorithmEntry, AlgorithmState } from '@/lib/types';
 export const linearSearchEntry: AlgorithmEntry = {
-  id: 'linear-search', name: 'Linear Search', category: 'searching', visualizerType: 'bars', tags: ['sequential'],
-  complexity: { best: 'O(1)', average: 'O(n)', worst: 'O(n)' },
-  theory: 'A simple approach is to do a linear search, i.e., start from the leftmost element and one by one compare target.',
+  id: 'linear-search', name: 'Linear Search', category: 'searching', visualizerType: 'array', tags: ['sequential'],
+  complexity: { best: 'O(1)', average: 'O(n)', worst: 'O(n)', space: 'O(1)' },
+  theory: 'Linear search is the simplest search algorithm; it checks every element in the list until it finds the target.',
   code: '// Linear Search', leetcode: [],
-  *generator(initialArray: number[]): Generator<AlgorithmState> { yield { array: [...initialArray], activeIndices: [0], description: 'Searching', codeLine: 1 }; }
+  stable: true,
+  *generator(initialArray: number[]): Generator<AlgorithmState> { yield { data: [...initialArray], activeIndices: [0], description: 'Searching', codeLine: 1, step: 0, swapped: false }; }
 };
