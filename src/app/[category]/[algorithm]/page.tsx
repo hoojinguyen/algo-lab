@@ -1,6 +1,7 @@
 "use client";
 
 import { use, useMemo, useState } from 'react';
+import Link from 'next/link';
 import { ALGORITHM_REGISTRY } from '@/lib/algorithms/registry';
 import { usePlayback } from '@/hooks/usePlayback';
 import { VisualizerPanel } from '@/components/visualizers/VisualizerPanel';
