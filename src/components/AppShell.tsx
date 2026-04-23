@@ -7,6 +7,8 @@ import { CATEGORIES } from '@/lib/algorithms/categories';
 import { getAlgorithmsByCategory } from '@/lib/algorithms/registry';
 import { useSearchContext } from '@/contexts/SearchContext';
 import { CommandPalette } from '@/components/ui/CommandPalette';
+import { CheckCircle } from 'lucide-react';
+import { useUserProgress } from '@/hooks/useUserProgress';
 
 const ICON_MAP: Record<string, any> = {
   ArrowDownUp,
@@ -28,6 +30,13 @@ const ICON_MAP: Record<string, any> = {
 export function AppShell({ children }: { children: React.ReactNode }) {
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
   const { openSearch } = useSearchContext();
+  const { progress, isMounted } = useUserProgress();
+
+  const activeAlgorithms = activeCategory ? getAlgorithmsByCategory(activeCategory) : [];
+  const completedInCategory = activeAlgorithms.filter(algo => progress.completedAlgorithms.includes(algo.id)).length;
+  const categoryProgressPercentage = activeAlgorithms.length > 0 
+    ? Math.round((completedInCategory / activeAlgorithms.length) * 100) 
+    : 0;
 
   return (
     <div className="flex h-screen w-full overflow-hidden bg-bg-primary">
@@ -76,21 +85,43 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             <h2 className="text-sm font-semibold capitalize">{activeCategory.replace('-', ' ')}</h2>
           </div>
           <div className="flex-1 overflow-y-auto no-scrollbar p-2 flex flex-col gap-1">
-            {getAlgorithmsByCategory(activeCategory).map(algo => (
-              <Link 
-                key={algo.id}
-                href={`/${activeCategory}/${algo.id}`}
-                className="px-3 py-2 text-sm text-text-secondary hover:text-text-primary hover:bg-bg-tertiary rounded-md block"
-              >
-                {algo.name}
-              </Link>
-            ))}
-            {getAlgorithmsByCategory(activeCategory).length === 0 && (
+            {activeAlgorithms.map(algo => {
+              const isCompleted = isMounted && progress.completedAlgorithms.includes(algo.id);
+              return (
+                <Link 
+                  key={algo.id}
+                  href={`/${activeCategory}/${algo.id}`}
+                  className="px-3 py-2 text-sm text-text-secondary hover:text-text-primary hover:bg-bg-tertiary rounded-md flex items-center justify-between group"
+                >
+                  <span className="truncate pr-2">{algo.name}</span>
+                  {isCompleted && (
+                    <CheckCircle size={14} className="text-success flex-shrink-0" />
+                  )}
+                </Link>
+              );
+            })}
+            {activeAlgorithms.length === 0 && (
               <div className="px-3 py-2 text-xs text-text-muted italic">
                 Coming soon...
               </div>
             )}
           </div>
+          
+          {/* Category Progress Bar */}
+          {activeAlgorithms.length > 0 && isMounted && (
+            <div className="p-4 border-t border-border bg-bg-tertiary/50">
+              <div className="flex justify-between items-center mb-2">
+                <span className="text-xs font-medium text-text-secondary">Category Progress</span>
+                <span className="text-xs font-mono text-text-muted">{categoryProgressPercentage}%</span>
+              </div>
+              <div className="w-full bg-border rounded-full h-1.5 overflow-hidden">
+                <div 
+                  className="bg-accent h-1.5 rounded-full transition-all duration-500" 
+                  style={{ width: `${categoryProgressPercentage}%` }}
+                />
+              </div>
+            </div>
+          )}
         </aside>
       )}
 
