@@ -87,6 +87,7 @@ export const linearRegressionEntry: AlgorithmEntry = {
   }
   return { m, b };
 }`,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   generator: linearRegressionGenerator as any,
   leetcode: []
 };

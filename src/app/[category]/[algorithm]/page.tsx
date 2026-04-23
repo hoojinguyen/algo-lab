@@ -54,7 +54,7 @@ export default function LessonPage({ params }: { params: Promise<{ category: str
     }
     
     const result = [];
-    for (let state of generator) {
+    for (const state of generator) {
       result.push(state);
     }
     return result;
@@ -75,7 +75,7 @@ export default function LessonPage({ params }: { params: Promise<{ category: str
     return (
       <div className="flex flex-col items-center justify-center h-full text-center p-12">
         <h2 className="text-2xl font-semibold mb-2">Algorithm Not Found</h2>
-        <p className="text-text-muted mb-8">The algorithm you're looking for doesn't exist or isn't in this category.</p>
+        <p className="text-text-muted mb-8">The algorithm you&apos;re looking for doesn&apos;t exist or isn&apos;t in this category.</p>
         <Link href="/" className="px-6 py-2 bg-text-primary text-bg-primary rounded-lg font-medium hover:opacity-90 transition-opacity">
           Return to Dashboard
         </Link>

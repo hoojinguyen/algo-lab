@@ -2,7 +2,7 @@ import { AlgorithmEntry, AlgorithmState } from '@/lib/types';
 
 export const bubbleSortGenerator = function* (arr: number[]): Generator<AlgorithmState> {
   const data = [...arr];
-  let n = data.length;
+  const n = data.length;
   let codeLine = 1;
   
   yield { step: 0, description: "Initial array state", activeIndices: [], swapped: false, data: [...data], codeLine: 1 };
@@ -19,7 +19,7 @@ export const bubbleSortGenerator = function* (arr: number[]): Generator<Algorith
       if (data[j] > data[j + 1]) {
         yield { step: 0, description: `${data[j]} > ${data[j + 1]}, need to swap`, activeIndices: [j, j + 1], swapped: false, data: [...data], codeLine };
         
-        let temp = data[j];
+        const temp = data[j];
         data[j] = data[j + 1];
         data[j + 1] = temp;
         

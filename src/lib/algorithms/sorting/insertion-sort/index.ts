@@ -26,7 +26,7 @@ export const insertionSortEntry: AlgorithmEntry = {
     yield { array: [...array], activeIndices: [], description: 'Starting Insertion Sort', codeLine: 1 };
     
     for (let i = 1; i < array.length; i++) {
-      let key = array[i];
+      const key = array[i];
       let j = i - 1;
       yield { array: [...array], activeIndices: [i], description: `Selecting ${key} to insert`, codeLine: 3 };
       

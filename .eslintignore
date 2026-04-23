@@ -1,0 +1,4 @@
+.agents/
+jest.config.js
+next.config.js
+next.config.mjs

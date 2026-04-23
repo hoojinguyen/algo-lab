@@ -7,7 +7,9 @@ export function usePlayback(states: AlgorithmState[], initialSpeedMs = 500) {
   const [speedMs, setSpeedMs] = useState(initialSpeedMs);
   
   const isPlayingRef = useRef(isPlaying);
-  isPlayingRef.current = isPlaying;
+  useEffect(() => {
+    isPlayingRef.current = isPlaying;
+  }, [isPlaying]);
 
   const next = useCallback(() => {
     setCurrentIndex((prev) => Math.min(prev + 1, states.length - 1));
@@ -30,6 +32,7 @@ export function usePlayback(states: AlgorithmState[], initialSpeedMs = 500) {
         next();
       }, speedMs);
     } else if (currentIndex >= states.length - 1) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setIsPlaying(false);
     }
 

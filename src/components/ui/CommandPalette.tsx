@@ -34,6 +34,7 @@ export function CommandPalette() {
   }, [isOpen]);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setSelectedIndex(0);
   }, [query, results]);
 
@@ -84,7 +85,7 @@ export function CommandPalette() {
         <div className="max-h-[60vh] overflow-y-auto p-2 no-scrollbar">
           {query.trim() !== '' && results.length === 0 && (
             <div className="p-8 text-center text-text-muted">
-              No algorithms found for "{query}"
+              No algorithms found for &quot;{query}&quot;
             </div>
           )}
 

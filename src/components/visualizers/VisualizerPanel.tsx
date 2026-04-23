@@ -23,6 +23,7 @@ export function VisualizerPanel({ type, state }: VisualizerPanelProps) {
     case 'matrix':
       return <MatrixVisualizer state={state as MatrixAlgorithmState} />;
     case 'scatter':
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       return <ScatterVisualizer state={state as any} />;
     default:
       return <div className="text-text-muted">Unsupported visualizer type: {type}</div>;

@@ -11,7 +11,7 @@ describe('linearRegressionGenerator', () => {
     const generator = linearRegressionGenerator({ points, hyperparameters: { learningRate: 0.01, maxIterations: 10 } });
     
     const states: ScatterAlgorithmState[] = [];
-    for (let state of generator) {
+    for (const state of generator) {
       states.push(state as ScatterAlgorithmState);
     }
     

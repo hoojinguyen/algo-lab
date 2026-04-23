@@ -31,6 +31,7 @@ export interface LeetCodeProblem {
 export interface AlgorithmEntry extends AlgorithmConfig {
   theory: string;
   code: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   generator: (input: any) => Generator<AlgorithmState>;
   leetcode: LeetCodeProblem[];
 }

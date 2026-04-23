@@ -10,7 +10,7 @@ import { CommandPalette } from '@/components/ui/CommandPalette';
 import { CheckCircle } from 'lucide-react';
 import { useUserProgress } from '@/hooks/useUserProgress';
 
-const ICON_MAP: Record<string, any> = {
+const ICON_MAP: Record<string, React.ElementType> = {
   ArrowDownUp,
   Search,
   Network,
