@@ -1,7 +1,10 @@
 "use client";
 
-import { use, useMemo, useState } from 'react';
+import { use, useMemo, useState, useEffect } from 'react';
 import Link from 'next/link';
+import { CheckCircle, ExternalLink, ChevronRight } from 'lucide-react';
+import { useUserProgress } from '@/hooks/useUserProgress';
+import { ThemeToggle } from '@/components/ui/ThemeToggle';
 import { ALGORITHM_REGISTRY } from '@/lib/algorithms/registry';
 import { usePlayback } from '@/hooks/usePlayback';
 import { VisualizerPanel } from '@/components/visualizers/VisualizerPanel';
@@ -15,6 +18,15 @@ export default function LessonPage({ params }: { params: Promise<{ category: str
   // Validation: Ensure algorithm belongs to the category in the URL
   const isValid = entry && entry.category === resolvedParams.category;
   const currentEntry = isValid ? entry : null;
+
+  const { progress, markCompleted, addRecentlyStudied, isMounted } = useUserProgress();
+  const isCompleted = isMounted && currentEntry && progress.completedAlgorithms.includes(currentEntry.id);
+
+  useEffect(() => {
+    if (currentEntry) {
+      addRecentlyStudied(currentEntry.id);
+    }
+  }, [currentEntry?.id]);
 
   const initialArray = useMemo(() => [9, 14, 5, 11, 3, 22, 1, 8], []);
   
@@ -74,8 +86,38 @@ export default function LessonPage({ params }: { params: Promise<{ category: str
   return (
     <div className="flex h-full w-full">
       {/* Left Column: Theory & Code */}
-      <section className="w-[55%] h-full border-r border-border overflow-y-auto no-scrollbar p-12 bg-bg-primary">
-        <div className="max-w-2xl mx-auto">
+      <section className="w-[55%] h-full border-r border-border overflow-y-auto no-scrollbar bg-bg-primary flex flex-col">
+        {/* TopBar */}
+        {currentEntry && (
+          <div className="px-12 py-6 border-b border-border flex items-center justify-between sticky top-0 bg-bg-primary/95 backdrop-blur z-10">
+            <div className="flex items-center gap-2 text-sm text-text-muted">
+              <Link href="/" className="hover:text-text-primary transition-colors">Home</Link>
+              <ChevronRight size={14} />
+              <span className="capitalize">{currentEntry.category.replace('-', ' ')}</span>
+              <ChevronRight size={14} />
+              <span className="text-text-primary font-medium">{currentEntry.name}</span>
+            </div>
+            <div className="flex items-center gap-4">
+              {isMounted && (
+                <button
+                  onClick={() => markCompleted(currentEntry.id)}
+                  disabled={isCompleted}
+                  className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
+                    isCompleted 
+                      ? 'bg-success/10 text-success cursor-default' 
+                      : 'bg-bg-tertiary text-text-secondary hover:text-text-primary hover:bg-border'
+                  }`}
+                >
+                  <CheckCircle size={16} />
+                  {isCompleted ? 'Completed' : 'Mark Complete'}
+                </button>
+              )}
+              <ThemeToggle />
+            </div>
+          </div>
+        )}
+
+        <div className="p-12 max-w-2xl mx-auto w-full">
           <div className="flex gap-2 mb-6">
             <span className="px-2 py-1 text-xs font-mono bg-success/10 text-success border border-success/20 rounded">
               Best: {currentEntry.complexity.best}
@@ -99,6 +141,42 @@ export default function LessonPage({ params }: { params: Promise<{ category: str
               code={currentEntry.code}
               activeLine={currentState.codeLine}
             />
+          </div>
+
+          {/* Practice Section */}
+          <div className="mt-16 pt-8 border-t border-border">
+            <h3 className="text-xl font-medium mb-6">Practice on LeetCode</h3>
+            {currentEntry.leetcode && currentEntry.leetcode.length > 0 ? (
+              <div className="grid grid-cols-1 gap-3">
+                {currentEntry.leetcode.map((problem) => (
+                  <a
+                    key={problem.id}
+                    href={`https://leetcode.com/problems/${problem.id}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center justify-between p-4 bg-bg-secondary border border-border rounded-xl hover:border-accent transition-colors group"
+                  >
+                    <div className="flex items-center gap-4">
+                      <span className={`px-2.5 py-1 rounded text-xs font-medium uppercase tracking-wider ${
+                        problem.difficulty === 'Easy' ? 'bg-success/10 text-success' :
+                        problem.difficulty === 'Medium' ? 'bg-warning/10 text-warning' :
+                        'bg-error/10 text-error'
+                      }`}>
+                        {problem.difficulty}
+                      </span>
+                      <span className="font-medium text-text-primary group-hover:text-accent transition-colors">
+                        {problem.title}
+                      </span>
+                    </div>
+                    <ExternalLink size={18} className="text-text-muted group-hover:text-accent transition-colors" />
+                  </a>
+                ))}
+              </div>
+            ) : (
+              <div className="p-6 bg-bg-secondary rounded-xl border border-border text-center">
+                <p className="text-text-muted">No specific practice problems mapped yet.</p>
+              </div>
+            )}
           </div>
         </div>
       </section>
