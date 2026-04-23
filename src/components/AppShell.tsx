@@ -5,6 +5,8 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { CATEGORIES } from '@/lib/algorithms/categories';
 import { getAlgorithmsByCategory } from '@/lib/algorithms/registry';
+import { useSearchContext } from '@/contexts/SearchContext';
+import { CommandPalette } from '@/components/ui/CommandPalette';
 
 const ICON_MAP: Record<string, any> = {
   ArrowDownUp,
@@ -25,6 +27,7 @@ const ICON_MAP: Record<string, any> = {
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
+  const { openSearch } = useSearchContext();
 
   return (
     <div className="flex h-screen w-full overflow-hidden bg-bg-primary">
@@ -34,7 +37,16 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           <Activity size={18} className="text-bg-primary" />
         </Link>
         
-        <div className="flex flex-col gap-4 flex-1 overflow-y-auto no-scrollbar">
+        <div className="flex flex-col gap-4 flex-1 overflow-y-auto no-scrollbar items-center">
+          <button 
+            className="p-2 rounded-md transition-colors text-text-muted hover:text-text-primary hover:bg-bg-tertiary"
+            onClick={openSearch}
+            title="Search Algorithms (⌘K)"
+          >
+            <Search size={20} strokeWidth={1.75} />
+          </button>
+          
+          <div className="w-6 h-px bg-border my-2 rounded-full flex-shrink-0" />
           {CATEGORIES.map(cat => {
             const Icon = ICON_MAP[cat.icon] || Activity;
             return (
@@ -85,6 +97,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       {/* Main Content */}
       <main className="flex-1 overflow-hidden relative">
         {children}
+        <CommandPalette />
       </main>
     </div>
   );
