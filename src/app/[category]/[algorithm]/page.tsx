@@ -1,6 +1,6 @@
 "use client";
 
-import { use, useMemo, useState, useEffect } from 'react';
+import { use, useMemo, useEffect } from 'react';
 import Link from 'next/link';
 import { CheckCircle, ExternalLink, ChevronRight } from 'lucide-react';
 import { useUserProgress } from '@/hooks/useUserProgress';
@@ -26,7 +26,7 @@ export default function LessonPage({ params }: { params: Promise<{ category: str
     if (currentEntry) {
       addRecentlyStudied(currentEntry.id);
     }
-  }, [currentEntry?.id]);
+  }, [currentEntry, addRecentlyStudied]);
 
   const initialArray = useMemo(() => [9, 14, 5, 11, 3, 22, 1, 8], []);
   

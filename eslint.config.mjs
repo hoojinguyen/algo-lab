@@ -12,6 +12,12 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    ".agents/**",
+    "jest.config.js",
+    "next.config.ts",
+    "next.config.mjs",
+    "lint.txt",
+    "skills-lock.json",
   ]),
 ]);
 

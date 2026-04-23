@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { MatrixAlgorithmState, CellState } from '@/lib/types';
+import { MatrixAlgorithmState } from '@/lib/types';
 import { motion } from 'framer-motion';
 
 interface MatrixVisualizerProps {
