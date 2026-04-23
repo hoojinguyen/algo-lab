@@ -1,10 +1,10 @@
-"use client";
+'use client';
 
 import { useEffect } from 'react';
 
 export function useKeyPress(
-  key: string, 
-  callback: (e: KeyboardEvent) => void, 
+  key: string,
+  callback: (e: KeyboardEvent) => void,
   metaKey: boolean = false
 ) {
   useEffect(() => {
@@ -18,7 +18,7 @@ export function useKeyPress(
         callback(event);
       }
     };
-    
+
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [key, callback, metaKey]);

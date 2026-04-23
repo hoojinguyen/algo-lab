@@ -1,24 +1,32 @@
 import { AlgorithmState } from '../types';
 
-export function* mergeSortGenerator(initialArray: number[]): Generator<AlgorithmState, void, unknown> {
+export function* mergeSortGenerator(
+  initialArray: number[]
+): Generator<AlgorithmState, void, unknown> {
   const arr = [...initialArray];
   let step = 1;
 
   function* mergeSort(left: number, right: number): Generator<AlgorithmState, void, unknown> {
     if (left >= right) return;
-    
+
     const mid = Math.floor((left + right) / 2);
-    
+
     yield* mergeSort(left, mid);
     yield* mergeSort(mid + 1, right);
     yield* merge(left, mid, right);
   }
 
-  function* merge(left: number, mid: number, right: number): Generator<AlgorithmState, void, unknown> {
+  function* merge(
+    left: number,
+    mid: number,
+    right: number
+  ): Generator<AlgorithmState, void, unknown> {
     const leftArr = arr.slice(left, mid + 1);
     const rightArr = arr.slice(mid + 1, right + 1);
-    
-    let i = 0, j = 0, k = left;
+
+    let i = 0,
+      j = 0,
+      k = left;
 
     while (i < leftArr.length && j < rightArr.length) {
       yield {
@@ -27,7 +35,7 @@ export function* mergeSortGenerator(initialArray: number[]): Generator<Algorithm
         activeIndices: [left + i, mid + 1 + j],
         swapped: false,
         data: [...arr],
-        codeLine: 12
+        codeLine: 12,
       };
 
       if (leftArr[i] <= rightArr[j]) {
@@ -37,16 +45,16 @@ export function* mergeSortGenerator(initialArray: number[]): Generator<Algorithm
         arr[k] = rightArr[j];
         j++;
       }
-      
+
       yield {
         step: step++,
         description: `Placing ${arr[k]} into position`,
         activeIndices: [k],
         swapped: true,
         data: [...arr],
-        codeLine: 13
+        codeLine: 13,
       };
-      
+
       k++;
     }
 
@@ -58,7 +66,7 @@ export function* mergeSortGenerator(initialArray: number[]): Generator<Algorithm
         activeIndices: [k],
         swapped: true,
         data: [...arr],
-        codeLine: 15
+        codeLine: 15,
       };
       i++;
       k++;
@@ -72,7 +80,7 @@ export function* mergeSortGenerator(initialArray: number[]): Generator<Algorithm
         activeIndices: [k],
         swapped: true,
         data: [...arr],
-        codeLine: 15
+        codeLine: 15,
       };
       j++;
       k++;
@@ -80,12 +88,12 @@ export function* mergeSortGenerator(initialArray: number[]): Generator<Algorithm
   }
 
   yield* mergeSort(0, arr.length - 1);
-  
+
   yield {
     step: step,
     description: `Merge Sort complete!`,
     activeIndices: [],
     swapped: false,
-    data: [...arr]
+    data: [...arr],
   };
 }

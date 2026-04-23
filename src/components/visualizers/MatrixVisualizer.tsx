@@ -13,20 +13,26 @@ export const MatrixVisualizer: React.FC<MatrixVisualizerProps> = ({ state }) => 
     if (state.currentCell?.row === row && state.currentCell?.col === col) {
       return 'bg-blue-500 text-white';
     }
-    
-    const highlighted = state.highlightedCells?.find(h => h.row === row && h.col === col);
+
+    const highlighted = state.highlightedCells?.find((h) => h.row === row && h.col === col);
     if (highlighted) {
       switch (highlighted.state) {
-        case 'computing': return 'bg-yellow-400 text-black';
-        case 'filled': return 'bg-gray-700 text-white';
-        case 'optimal': return 'bg-green-500 text-white';
-        case 'conflict': return 'bg-red-500 text-white';
-        case 'current': return 'bg-blue-500 text-white';
-        default: return 'bg-gray-800 text-gray-300';
+        case 'computing':
+          return 'bg-yellow-400 text-black';
+        case 'filled':
+          return 'bg-gray-700 text-white';
+        case 'optimal':
+          return 'bg-green-500 text-white';
+        case 'conflict':
+          return 'bg-red-500 text-white';
+        case 'current':
+          return 'bg-blue-500 text-white';
+        default:
+          return 'bg-gray-800 text-gray-300';
       }
     }
-    
-    const isPath = state.pathCells?.some(p => p.row === row && p.col === col);
+
+    const isPath = state.pathCells?.some((p) => p.row === row && p.col === col);
     if (isPath) {
       return 'bg-green-600 text-white';
     }

@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import { Play, Pause, SkipBack, SkipForward, RotateCcw } from 'lucide-react';
 
@@ -19,19 +19,19 @@ export function PlaybackControls({
   onPrev,
   onReset,
   isFinished,
-  isStart
+  isStart,
 }: PlaybackControlsProps) {
   return (
     <div className="flex items-center justify-center gap-6">
-      <button 
+      <button
         onClick={onReset}
         className="p-3 rounded-full text-text-secondary hover:bg-bg-tertiary transition-colors"
         title="Reset"
       >
         <RotateCcw size={20} />
       </button>
-      
-      <button 
+
+      <button
         onClick={onPrev}
         disabled={isStart}
         className={`p-3 rounded-full transition-colors ${
@@ -42,14 +42,14 @@ export function PlaybackControls({
         <SkipBack size={24} />
       </button>
 
-      <button 
+      <button
         onClick={onPlayPause}
         className="p-5 rounded-full bg-accent hover:bg-accent/80 text-white transition-all transform hover:scale-105 shadow-lg"
       >
         {isPlaying ? <Pause size={28} /> : <Play size={28} className="ml-1" />}
       </button>
 
-      <button 
+      <button
         onClick={onNext}
         disabled={isFinished}
         className={`p-3 rounded-full transition-colors ${

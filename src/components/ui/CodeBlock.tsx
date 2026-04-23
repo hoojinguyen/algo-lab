@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import { useEffect, useRef } from 'react';
 
@@ -9,7 +9,8 @@ interface CodeBlockProps {
 
 function tokenise(line: string): React.ReactNode {
   const tokens: { text: string; type: string }[] = [];
-  const re = /(".*?"|'.*?'|`.*?`|\/\/.*$|\b(function|return|let|const|var|if|else|for|while|of|new|this)\b|\b\d+\b)/g;
+  const re =
+    /(".*?"|'.*?'|`.*?`|\/\/.*$|\b(function|return|let|const|var|if|else|for|while|of|new|this)\b|\b\d+\b)/g;
 
   let cursor = 0;
   let match: RegExpExecArray | null;
@@ -41,7 +42,11 @@ function tokenise(line: string): React.ReactNode {
     else if (t.type === 'string') className = 'text-warning';
     else if (t.type === 'number') className = 'text-success';
     else if (t.type === 'comment') className = 'text-text-muted italic';
-    return <span key={i} className={className}>{t.text}</span>;
+    return (
+      <span key={i} className={className}>
+        {t.text}
+      </span>
+    );
   });
 }
 
@@ -65,7 +70,9 @@ export function CodeBlock({ code, activeLine }: CodeBlockProps) {
         <span className="w-3 h-3 rounded-full bg-border" />
         <span className="w-3 h-3 rounded-full bg-border" />
         <span className="w-3 h-3 rounded-full bg-border" />
-        <span className="ml-4 text-xs font-bold text-text-muted uppercase tracking-widest">Implementation</span>
+        <span className="ml-4 text-xs font-bold text-text-muted uppercase tracking-widest">
+          Implementation
+        </span>
       </div>
 
       <pre
@@ -80,9 +87,7 @@ export function CodeBlock({ code, activeLine }: CodeBlockProps) {
               key={idx}
               data-line={lineNumber}
               className={`flex gap-4 rounded-sm transition-all duration-200 ${
-                isActive
-                  ? 'bg-accent/10 border-l-2 border-accent -mx-4 px-3'
-                  : '-mx-0'
+                isActive ? 'bg-accent/10 border-l-2 border-accent -mx-4 px-3' : '-mx-0'
               }`}
             >
               <span
@@ -92,9 +97,7 @@ export function CodeBlock({ code, activeLine }: CodeBlockProps) {
               >
                 {lineNumber}
               </span>
-              <span className="flex-1">
-                {line ? tokenise(line) : <span>&nbsp;</span>}
-              </span>
+              <span className="flex-1">{line ? tokenise(line) : <span>&nbsp;</span>}</span>
             </div>
           );
         })}

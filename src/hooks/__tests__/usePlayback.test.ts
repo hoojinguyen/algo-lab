@@ -10,7 +10,7 @@ const mockStates: AlgorithmState[] = [
 describe('usePlayback', () => {
   it('manages state navigation', () => {
     const { result } = renderHook(() => usePlayback(mockStates));
-    
+
     expect(result.current.currentState?.step).toBe(1);
     expect(result.current.isPlaying).toBe(false);
 

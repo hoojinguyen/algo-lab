@@ -5,7 +5,7 @@ export function usePlayback(states: AlgorithmState[], initialSpeedMs = 500) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [speedMs, setSpeedMs] = useState(initialSpeedMs);
-  
+
   const isPlayingRef = useRef(isPlaying);
   useEffect(() => {
     isPlayingRef.current = isPlaying;
@@ -26,7 +26,7 @@ export function usePlayback(states: AlgorithmState[], initialSpeedMs = 500) {
 
   useEffect(() => {
     let timeoutId: NodeJS.Timeout;
-    
+
     if (isPlaying && currentIndex < states.length - 1) {
       timeoutId = setTimeout(() => {
         next();
@@ -50,6 +50,6 @@ export function usePlayback(states: AlgorithmState[], initialSpeedMs = 500) {
     next,
     prev,
     reset,
-    setSpeedMs
+    setSpeedMs,
   };
 }

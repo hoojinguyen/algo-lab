@@ -16,14 +16,17 @@ export const ScatterVisualizer: React.FC<ScatterVisualizerProps> = ({ state }) =
 
     // Clear canvas
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    
+
     // Determine bounds
-    let minX = 0, maxX = 10, minY = 0, maxY = 10;
+    let minX = 0,
+      maxX = 10,
+      minY = 0,
+      maxY = 10;
     if (state.points.length > 0) {
-      minX = Math.min(...state.points.map(p => p.x)) - 1;
-      maxX = Math.max(...state.points.map(p => p.x)) + 1;
-      minY = Math.min(...state.points.map(p => p.y)) - 1;
-      maxY = Math.max(...state.points.map(p => p.y)) + 1;
+      minX = Math.min(...state.points.map((p) => p.x)) - 1;
+      maxX = Math.max(...state.points.map((p) => p.x)) + 1;
+      minY = Math.min(...state.points.map((p) => p.y)) - 1;
+      maxY = Math.max(...state.points.map((p) => p.y)) + 1;
     }
 
     // Coordinate mapping
@@ -45,7 +48,7 @@ export const ScatterVisualizer: React.FC<ScatterVisualizerProps> = ({ state }) =
     ctx.stroke();
 
     // Draw points
-    state.points.forEach(p => {
+    state.points.forEach((p) => {
       ctx.beginPath();
       ctx.arc(mapX(p.x), mapY(p.y), 6, 0, 2 * Math.PI);
       ctx.fillStyle = '#60A5FA';
@@ -61,7 +64,7 @@ export const ScatterVisualizer: React.FC<ScatterVisualizerProps> = ({ state }) =
       const y1 = slope * x1 + intercept;
       const x2 = maxX;
       const y2 = slope * x2 + intercept;
-      
+
       ctx.beginPath();
       ctx.moveTo(mapX(x1), mapY(y1));
       ctx.lineTo(mapX(x2), mapY(y2));
@@ -73,17 +76,21 @@ export const ScatterVisualizer: React.FC<ScatterVisualizerProps> = ({ state }) =
 
   return (
     <div className="w-full h-full flex flex-col items-center justify-center p-4 relative">
-      <canvas 
-        ref={canvasRef} 
-        width={600} 
-        height={400} 
+      <canvas
+        ref={canvasRef}
+        width={600}
+        height={400}
         className="bg-bg-tertiary border border-border rounded-lg shadow-sm"
       />
       {state.costHistory && state.costHistory.length > 0 && (
         <div className="absolute top-8 right-8 bg-bg-primary border border-border p-3 rounded text-xs font-mono shadow-md">
           <p className="text-text-secondary mb-1">Cost (MSE)</p>
-          <p className="text-error font-bold">{state.costHistory[state.costHistory.length - 1].toFixed(4)}</p>
-          <p className="text-text-muted mt-2">Epoch {state.iteration} / {state.totalIterations}</p>
+          <p className="text-error font-bold">
+            {state.costHistory[state.costHistory.length - 1].toFixed(4)}
+          </p>
+          <p className="text-text-muted mt-2">
+            Epoch {state.iteration} / {state.totalIterations}
+          </p>
         </div>
       )}
     </div>

@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import { useState, useEffect } from 'react';
 import { CATEGORIES } from '@/lib/algorithms/categories';
@@ -12,7 +12,7 @@ export function useUserProgress() {
   const [isMounted, setIsMounted] = useState(false);
   const [progress, setProgress] = useState<UserProgress>({
     completedAlgorithms: [],
-    recentlyStudied: []
+    recentlyStudied: [],
   });
 
   useEffect(() => {
@@ -37,31 +37,35 @@ export function useUserProgress() {
     if (progress.completedAlgorithms.includes(id)) return;
     saveProgress({
       ...progress,
-      completedAlgorithms: [...progress.completedAlgorithms, id]
+      completedAlgorithms: [...progress.completedAlgorithms, id],
     });
   };
 
   const addRecentlyStudied = (id: string) => {
-    const filtered = progress.recentlyStudied.filter(item => item !== id);
+    const filtered = progress.recentlyStudied.filter((item) => item !== id);
     saveProgress({
       ...progress,
-      recentlyStudied: [id, ...filtered].slice(0, 5)
+      recentlyStudied: [id, ...filtered].slice(0, 5),
     });
   };
 
   // For Phase 1 we assume a total of 55 algorithms as per spec
-  const totalAlgorithms = 55; 
-  const completionPercentage = Math.round((progress.completedAlgorithms.length / totalAlgorithms) * 100) || 0;
+  const totalAlgorithms = 55;
+  const completionPercentage =
+    Math.round((progress.completedAlgorithms.length / totalAlgorithms) * 100) || 0;
 
   const getSuggestedNext = () => {
-    // Suggestion logic: return the first default algorithm of the first category 
+    // Suggestion logic: return the first default algorithm of the first category
     // that hasn't been completed.
     for (const cat of CATEGORIES) {
-      if (cat.defaultAlgorithmId && !progress.completedAlgorithms.includes(cat.defaultAlgorithmId)) {
+      if (
+        cat.defaultAlgorithmId &&
+        !progress.completedAlgorithms.includes(cat.defaultAlgorithmId)
+      ) {
         return {
           id: cat.defaultAlgorithmId,
           categoryId: cat.id,
-          name: cat.name + ' Algorithm' 
+          name: cat.name + ' Algorithm',
         };
       }
     }
@@ -76,6 +80,6 @@ export function useUserProgress() {
     addRecentlyStudied,
     getSuggestedNext,
     completionPercentage,
-    totalAlgorithms
+    totalAlgorithms,
   };
 }

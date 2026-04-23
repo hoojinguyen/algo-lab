@@ -6,10 +6,10 @@ export function GraphVisualizer({ state }: { state: GraphAlgorithmState }) {
     <div className="relative w-full h-full min-h-[400px] flex items-center justify-center">
       <svg className="w-full h-full overflow-visible">
         {state.edges.map((edge) => {
-          const fromNode = state.nodes.find(n => n.id === edge.from);
-          const toNode = state.nodes.find(n => n.id === edge.to);
+          const fromNode = state.nodes.find((n) => n.id === edge.from);
+          const toNode = state.nodes.find((n) => n.id === edge.to);
           if (!fromNode || !toNode) return null;
-          
+
           return (
             <motion.line
               key={`${edge.from}-${edge.to}`}

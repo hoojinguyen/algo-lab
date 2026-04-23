@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import { createContext, useContext, useState, ReactNode } from 'react';
 
@@ -15,7 +15,14 @@ export function SearchProvider({ children }: { children: ReactNode }) {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <SearchContext.Provider value={{ isOpen, openSearch: () => setIsOpen(true), closeSearch: () => setIsOpen(false), toggleSearch: () => setIsOpen(!isOpen) }}>
+    <SearchContext.Provider
+      value={{
+        isOpen,
+        openSearch: () => setIsOpen(true),
+        closeSearch: () => setIsOpen(false),
+        toggleSearch: () => setIsOpen(!isOpen),
+      }}
+    >
       {children}
     </SearchContext.Provider>
   );

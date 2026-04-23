@@ -1,6 +1,8 @@
 import { AlgorithmState } from '../types';
 
-export function* quickSortGenerator(initialArray: number[]): Generator<AlgorithmState, void, unknown> {
+export function* quickSortGenerator(
+  initialArray: number[]
+): Generator<AlgorithmState, void, unknown> {
   const arr = [...initialArray];
   let step = 1;
 
@@ -22,7 +24,7 @@ export function* quickSortGenerator(initialArray: number[]): Generator<Algorithm
       activeIndices: [high],
       swapped: false,
       data: [...arr],
-      codeLine: 10
+      codeLine: 10,
     };
 
     for (let j = low; j < high; j++) {
@@ -32,7 +34,7 @@ export function* quickSortGenerator(initialArray: number[]): Generator<Algorithm
         activeIndices: [j, high],
         swapped: false,
         data: [...arr],
-        codeLine: 13
+        codeLine: 13,
       };
 
       if (arr[j] < pivot) {
@@ -48,7 +50,7 @@ export function* quickSortGenerator(initialArray: number[]): Generator<Algorithm
             activeIndices: [i, j],
             swapped: true,
             data: [...arr],
-            codeLine: 15
+            codeLine: 15,
           };
         }
       }
@@ -64,19 +66,19 @@ export function* quickSortGenerator(initialArray: number[]): Generator<Algorithm
       activeIndices: [i + 1, high],
       swapped: true,
       data: [...arr],
-      codeLine: 18
+      codeLine: 18,
     };
 
     return i + 1;
   }
 
   yield* quickSort(0, arr.length - 1);
-  
+
   yield {
     step: step,
     description: `Quick Sort complete!`,
     activeIndices: [],
     swapped: false,
-    data: [...arr]
+    data: [...arr],
   };
 }

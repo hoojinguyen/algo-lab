@@ -1,4 +1,12 @@
-import { AlgorithmState, VisualizerType, ArrayAlgorithmState, GraphAlgorithmState, TreeAlgorithmState, LinkedListAlgorithmState, MatrixAlgorithmState } from '@/lib/types';
+import {
+  AlgorithmState,
+  VisualizerType,
+  ArrayAlgorithmState,
+  GraphAlgorithmState,
+  TreeAlgorithmState,
+  LinkedListAlgorithmState,
+  MatrixAlgorithmState,
+} from '@/lib/types';
 import { ArrayVisualizer } from './ArrayVisualizer';
 import { GraphVisualizer } from './GraphVisualizer';
 import { TreeVisualizer } from './TreeVisualizer';

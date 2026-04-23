@@ -35,9 +35,9 @@ export const ALGORITHM_REGISTRY: Record<string, AlgorithmEntry> = {
   'interpolation-search': interpolationSearchEntry,
 
   // AI/ML
-  'linear-regression': linearRegressionEntry
+  'linear-regression': linearRegressionEntry,
 };
 
 export const getAlgorithmsByCategory = (categoryId: string) => {
-  return Object.values(ALGORITHM_REGISTRY).filter(algo => algo.category === categoryId);
+  return Object.values(ALGORITHM_REGISTRY).filter((algo) => algo.category === categoryId);
 };

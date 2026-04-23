@@ -1,48 +1,50 @@
 import { AlgorithmEntry, ScatterAlgorithmState, MLGeneratorInput } from '@/lib/types';
 
-export const linearRegressionGenerator = function* (input: MLGeneratorInput): Generator<ScatterAlgorithmState> {
+export const linearRegressionGenerator = function* (
+  input: MLGeneratorInput
+): Generator<ScatterAlgorithmState> {
   const { points } = input;
   const learningRate = input.hyperparameters.learningRate || 0.01;
   const maxIterations = input.hyperparameters.maxIterations || 100;
-  
+
   let m = 0; // slope
   let b = 0; // intercept
   const n = points.length;
   const costHistory: number[] = [];
-  
+
   yield {
     step: 0,
-    description: "Initialize random weights (slope=0, intercept=0)",
+    description: 'Initialize random weights (slope=0, intercept=0)',
     codeLine: 1,
     points,
     regressionLine: { slope: m, intercept: b },
     iteration: 0,
     totalIterations: maxIterations,
-    costHistory: [...costHistory]
+    costHistory: [...costHistory],
   };
 
   for (let iter = 1; iter <= maxIterations; iter++) {
     let errorSum = 0;
     let mGradient = 0;
     let bGradient = 0;
-    
+
     for (let i = 0; i < n; i++) {
       const x = points[i].x;
       const y = points[i].y;
       const guess = m * x + b;
       const error = guess - y;
-      
+
       errorSum += error * error;
       mGradient += (2 / n) * x * error;
       bGradient += (2 / n) * error;
     }
-    
+
     const cost = errorSum / n;
     costHistory.push(cost);
-    
-    m = m - (learningRate * mGradient);
-    b = b - (learningRate * bGradient);
-    
+
+    m = m - learningRate * mGradient;
+    b = b - learningRate * bGradient;
+
     yield {
       step: iter,
       description: `Epoch ${iter}: Cost = ${cost.toFixed(4)}. Updated slope=${m.toFixed(2)}, intercept=${b.toFixed(2)}`,
@@ -51,7 +53,7 @@ export const linearRegressionGenerator = function* (input: MLGeneratorInput): Ge
       regressionLine: { slope: m, intercept: b },
       iteration: iter,
       totalIterations: maxIterations,
-      costHistory: [...costHistory]
+      costHistory: [...costHistory],
     };
   }
 };
@@ -64,12 +66,13 @@ export const linearRegressionEntry: AlgorithmEntry = {
     best: 'O(n)',
     average: 'O(n × iter)',
     worst: 'O(n × iter)',
-    space: 'O(1)'
+    space: 'O(1)',
   },
   stable: true,
   visualizerType: 'scatter',
   tags: ['machine-learning', 'regression'],
-  theory: 'Linear Regression fits a straight line to a set of data points by minimizing the mean squared error. It uses gradient descent to iteratively update the slope and intercept.',
+  theory:
+    'Linear Regression fits a straight line to a set of data points by minimizing the mean squared error. It uses gradient descent to iteratively update the slope and intercept.',
   code: `function linearRegression(points, lr, epochs) {
   let m = 0, b = 0;
   let n = points.length;
@@ -89,5 +92,5 @@ export const linearRegressionEntry: AlgorithmEntry = {
 }`,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   generator: linearRegressionGenerator as any,
-  leetcode: []
+  leetcode: [],
 };

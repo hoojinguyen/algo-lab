@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
@@ -16,10 +16,14 @@ export function CommandPalette() {
 
   const { results, groupedResults } = useSearch(query);
 
-  useKeyPress('k', (e) => {
-    e.preventDefault();
-    toggleSearch();
-  }, true);
+  useKeyPress(
+    'k',
+    (e) => {
+      e.preventDefault();
+      toggleSearch();
+    },
+    true
+  );
 
   useKeyPress('escape', () => {
     if (isOpen) closeSearch();
@@ -61,10 +65,7 @@ export function CommandPalette() {
 
   return (
     <div className="fixed inset-0 z-50 flex items-start justify-center pt-[15vh]">
-      <div 
-        className="fixed inset-0 bg-black/40 backdrop-blur-sm" 
-        onClick={closeSearch}
-      />
+      <div className="fixed inset-0 bg-black/40 backdrop-blur-sm" onClick={closeSearch} />
       <div className="relative w-full max-w-2xl bg-bg-secondary border border-border rounded-xl shadow-2xl overflow-hidden flex flex-col">
         <div className="flex items-center px-4 border-b border-border">
           <Search size={20} className="text-text-muted mr-3" />
@@ -98,13 +99,13 @@ export function CommandPalette() {
                 {items.map((algo) => {
                   const globalIndex = results.indexOf(algo);
                   const isSelected = globalIndex === selectedIndex;
-                  
+
                   return (
                     <div
                       key={algo.id}
                       className={`flex items-center justify-between px-3 py-3 rounded-lg cursor-pointer transition-colors ${
-                        isSelected 
-                          ? 'bg-bg-tertiary border-l-2 border-accent text-text-primary' 
+                        isSelected
+                          ? 'bg-bg-tertiary border-l-2 border-accent text-text-primary'
                           : 'text-text-secondary hover:bg-bg-tertiary/50 hover:text-text-primary border-l-2 border-transparent'
                       }`}
                       onClick={() => {
@@ -115,8 +116,11 @@ export function CommandPalette() {
                     >
                       <span className="font-medium">{algo.name}</span>
                       <div className="flex gap-2">
-                        {algo.tags.map(tag => (
-                          <span key={tag} className="px-2 py-0.5 text-[10px] uppercase font-mono tracking-wider bg-bg-primary border border-border rounded text-text-muted">
+                        {algo.tags.map((tag) => (
+                          <span
+                            key={tag}
+                            className="px-2 py-0.5 text-[10px] uppercase font-mono tracking-wider bg-bg-primary border border-border rounded text-text-muted"
+                          >
                             {tag}
                           </span>
                         ))}
