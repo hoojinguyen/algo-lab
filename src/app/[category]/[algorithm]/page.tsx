@@ -4,7 +4,6 @@ import { use, useMemo, useEffect } from 'react';
 import Link from 'next/link';
 import { CheckCircle, ExternalLink, ChevronRight } from 'lucide-react';
 import { useUserProgress } from '@/hooks/useUserProgress';
-import { ThemeToggle } from '@/components/ui/ThemeToggle';
 import { ALGORITHM_REGISTRY } from '@/lib/algorithms/registry';
 import { usePlayback } from '@/hooks/usePlayback';
 import { VisualizerPanel } from '@/components/visualizers/VisualizerPanel';
@@ -122,7 +121,6 @@ export default function LessonPage({
                   {isCompleted ? 'Completed' : 'Mark Complete'}
                 </button>
               )}
-              <ThemeToggle />
             </div>
           </div>
         )}
