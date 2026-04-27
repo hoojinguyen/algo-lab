@@ -8,8 +8,19 @@ export const selectionSortEntry: AlgorithmEntry = {
   tags: ['comparison', 'in-place'],
   complexity: { best: 'O(n²)', average: 'O(n²)', worst: 'O(n²)', space: 'O(1)' },
   stable: false,
-  theory:
-    'Selection sort divides the input list into two parts: a sorted sublist of items which is built up from left to right at the front (left) of the list and a sublist of the remaining unsorted items that occupy the rest of the list.',
+  theory: `Selection Sort divides the array into two conceptual regions: a sorted region on the left and an unsorted region on the right. On each pass, it scans the entire unsorted region to find the minimum element, then swaps it into the next position of the sorted region.
+
+**Time Complexity:** O(n²) for best, average, and worst cases — the inner scan must always traverse the full unsorted region regardless of the data's initial order.
+
+**Space Complexity:** O(1) — sorting is done in-place.
+
+**Stability:** Unstable — the swap operation can change the relative order of equal elements. For example, in [5a, 5b, 1], the 1 swaps with 5a, moving 5b before 5a.
+
+**Selection Sort's unique advantage:** It makes at most O(n) write operations (swaps). This is its defining trait. In systems where writing to memory is significantly more expensive than reading (e.g., flash memory or EEPROM), Selection Sort can outperform algorithms with better time complexity.
+
+**When to use:** Prefer Selection Sort over Bubble Sort for memory-constrained hardware where minimizing writes matters. In most software contexts, it is outperformed by Insertion Sort for small arrays and O(n log n) algorithms for large ones.
+
+**Key Interview Insight:** The "scan to find minimum and swap" pattern is the kernel of many problems. When a problem asks for "the k-th smallest/largest element" through repeated selection, that's Selection Sort logic.`,
   code: `function selectionSort(arr) {
   for (let i = 0; i < arr.length - 1; i++) {
     let minIdx = i;
@@ -28,8 +39,18 @@ export const selectionSortEntry: AlgorithmEntry = {
 }`,
   leetcode: [
     {
-      title: 'Sort an Array',
-      url: 'https://leetcode.com/problems/sort-an-array',
+      title: 'Kth Largest Element in an Array',
+      url: 'https://leetcode.com/problems/kth-largest-element-in-an-array',
+      difficulty: 'medium',
+    },
+    {
+      title: 'Third Maximum Number',
+      url: 'https://leetcode.com/problems/third-maximum-number',
+      difficulty: 'easy',
+    },
+    {
+      title: 'Minimum Operations to Make Array Equal',
+      url: 'https://leetcode.com/problems/minimum-operations-to-make-array-equal',
       difficulty: 'medium',
     },
   ],

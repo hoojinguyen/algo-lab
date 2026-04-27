@@ -97,7 +97,17 @@ export const bubbleSortEntry: AlgorithmEntry = {
   stable: true,
   visualizerType: 'array',
   tags: ['comparison', 'in-place'],
-  theory: `Bubble Sort is the simplest sorting algorithm that works by repeatedly swapping the adjacent elements if they are in the wrong order. This algorithm is not suitable for large data sets as its average and worst-case time complexity is quite high.`,
+  theory: `Bubble Sort works by making repeated passes through the array, comparing each pair of adjacent elements and swapping them if they are in the wrong order. After each pass, the largest unsorted element "bubbles up" to its correct position at the end of the array.
+
+**Time Complexity:** O(n²) average and worst case — every element may need to be compared against every other element. However, with an early-exit optimization (a flag to detect if any swaps occurred in a pass), the best case drops to O(n) when the input is already sorted.
+
+**Space Complexity:** O(1) — sorting happens in-place with no auxiliary data structures.
+
+**Stability:** Stable — equal elements are never swapped past each other, preserving their original relative order.
+
+**When to use:** Bubble Sort is rarely used in production due to its quadratic time complexity. It is useful for teaching, and its early-exit variant can be practical when data is known to be nearly sorted and the dataset is very small (< 10 elements). Its in-place nature makes it usable in extremely memory-constrained environments.
+
+**Key Interview Insight:** The early-exit optimization transforms this from a naive algorithm into one that can detect a sorted array in O(n) time. Interviewers sometimes ask you to implement this optimized version.`,
   code: `function bubbleSort(arr) {
   for (let i = 0; i < arr.length; i++) {
     for (let j = 0; j < arr.length - i - 1; j++) {
@@ -111,5 +121,21 @@ export const bubbleSortEntry: AlgorithmEntry = {
   return arr;
 }`,
   generator: bubbleSortGenerator,
-  leetcode: [],
+  leetcode: [
+    {
+      title: 'Sort an Array',
+      url: 'https://leetcode.com/problems/sort-an-array',
+      difficulty: 'medium',
+    },
+    {
+      title: 'Move Zeroes',
+      url: 'https://leetcode.com/problems/move-zeroes',
+      difficulty: 'easy',
+    },
+    {
+      title: 'Sort Colors',
+      url: 'https://leetcode.com/problems/sort-colors',
+      difficulty: 'medium',
+    },
+  ],
 };
