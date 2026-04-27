@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { CATEGORIES } from '@/lib/algorithms/categories';
 
 export interface UserProgress {
@@ -28,26 +28,28 @@ export function useUserProgress() {
     }
   }, []);
 
-  const saveProgress = (newProgress: UserProgress) => {
-    setProgress(newProgress);
-    localStorage.setItem('algolab_progress', JSON.stringify(newProgress));
-  };
-
-  const markCompleted = (id: string) => {
-    if (progress.completedAlgorithms.includes(id)) return;
-    saveProgress({
-      ...progress,
-      completedAlgorithms: [...progress.completedAlgorithms, id],
+  const markCompleted = useCallback((id: string) => {
+    setProgress((prev) => {
+      if (prev.completedAlgorithms.includes(id)) return prev;
+      const next = { ...prev, completedAlgorithms: [...prev.completedAlgorithms, id] };
+      localStorage.setItem('algolab_progress', JSON.stringify(next));
+      return next;
     });
-  };
+  }, []);
 
-  const addRecentlyStudied = (id: string) => {
-    const filtered = progress.recentlyStudied.filter((item) => item !== id);
-    saveProgress({
-      ...progress,
-      recentlyStudied: [id, ...filtered].slice(0, 5),
+  const addRecentlyStudied = useCallback((id: string) => {
+    setProgress((prev) => {
+      const filtered = prev.recentlyStudied.filter((item) => item !== id);
+      const nextIds = [id, ...filtered].slice(0, 5);
+      // Only update if it actually changed to prevent loops
+      if (JSON.stringify(prev.recentlyStudied) === JSON.stringify(nextIds)) {
+        return prev;
+      }
+      const next = { ...prev, recentlyStudied: nextIds };
+      localStorage.setItem('algolab_progress', JSON.stringify(next));
+      return next;
     });
-  };
+  }, []);
 
   // For Phase 1 we assume a total of 55 algorithms as per spec
   const totalAlgorithms = 55;
