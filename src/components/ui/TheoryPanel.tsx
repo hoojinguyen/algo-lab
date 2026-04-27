@@ -2,7 +2,6 @@
 
 import { parseTheory } from '@/lib/utils/theory-parser';
 import { AlgorithmComplexity } from '@/lib/types';
-import { cn } from '@/lib/utils';
 
 interface TheoryPanelProps {
   name: string;
@@ -34,12 +33,11 @@ export function TheoryPanel({ name, category, theory, complexity, stable }: Theo
         <ComplexityPill label="space" value={complexity.space} type="muted" />
         {stable !== undefined && (
           <span
-            className={cn(
-              'px-2 py-1 text-[10px] font-bold border rounded uppercase tracking-wider',
+            className={`px-2 py-1 text-[10px] font-bold border rounded uppercase tracking-wider ${
               stable
                 ? 'text-emerald-400 bg-emerald-400/10 border-emerald-400/20'
                 : 'text-amber-400 bg-amber-400/10 border-amber-400/20'
-            )}
+            }`}
           >
             {stable ? 'Stable' : 'Unstable'}
           </span>
@@ -99,10 +97,7 @@ function ComplexityPill({
 
   return (
     <span
-      className={cn(
-        'px-2.5 py-1 text-[11px] font-mono font-bold border rounded-md flex items-center gap-2 shadow-sm',
-        styles[type]
-      )}
+      className={`px-2.5 py-1 text-[11px] font-mono font-bold border rounded-md flex items-center gap-2 shadow-sm ${styles[type]}`}
     >
       {value}
       <span className="opacity-50 font-sans font-normal text-[9px] uppercase tracking-tighter">

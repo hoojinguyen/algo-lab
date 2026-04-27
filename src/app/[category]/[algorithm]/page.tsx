@@ -9,6 +9,7 @@ import { usePlayback } from '@/hooks/usePlayback';
 import { VisualizerPanel } from '@/components/visualizers/VisualizerPanel';
 import { PlaybackControls } from '@/components/ui/PlaybackControls';
 import { CodeBlock } from '@/components/ui/CodeBlock';
+import { TheoryPanel } from '@/components/ui/TheoryPanel';
 
 export default function LessonPage({
   params,
@@ -126,23 +127,13 @@ export default function LessonPage({
         )}
 
         <div className="p-12 max-w-2xl mx-auto w-full">
-          <div className="flex gap-2 mb-6">
-            <span className="px-2 py-1 text-xs font-mono bg-success/10 text-success border border-success/20 rounded">
-              Best: {currentEntry.complexity.best}
-            </span>
-            <span className="px-2 py-1 text-xs font-mono bg-warning/10 text-warning border border-warning/20 rounded">
-              Avg: {currentEntry.complexity.average}
-            </span>
-            <span className="px-2 py-1 text-xs font-mono bg-error/10 text-error border border-error/20 rounded">
-              Worst: {currentEntry.complexity.worst}
-            </span>
-          </div>
-
-          <h1 className="text-4xl font-medium mb-6">{currentEntry.name}</h1>
-
-          <div className="prose prose-invert max-w-none text-text-secondary leading-relaxed mb-12">
-            <p>{currentEntry.theory}</p>
-          </div>
+          <TheoryPanel
+            name={currentEntry.name}
+            category={currentEntry.category}
+            theory={currentEntry.theory}
+            complexity={currentEntry.complexity}
+            stable={currentEntry.stable}
+          />
 
           <div className="mb-12">
             <CodeBlock code={currentEntry.code} activeLine={currentState.codeLine} />
