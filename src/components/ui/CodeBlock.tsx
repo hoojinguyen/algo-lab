@@ -1,10 +1,12 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
+import { clsx } from 'clsx';
 
 interface CodeBlockProps {
   code: string;
   activeLine?: number;
+  compact?: boolean;
 }
 
 function tokenise(line: string): React.ReactNode {
@@ -50,7 +52,7 @@ function tokenise(line: string): React.ReactNode {
   });
 }
 
-export function CodeBlock({ code, activeLine }: CodeBlockProps) {
+export function CodeBlock({ code, activeLine, compact = false }: CodeBlockProps) {
   const codeRef = useRef<HTMLPreElement>(null);
   const lines = code.split('\n');
 
@@ -59,27 +61,38 @@ export function CodeBlock({ code, activeLine }: CodeBlockProps) {
       // Fix: Used string concatenation instead of template literal to avoid parsing errors
       const el = codeRef.current.querySelector("[data-line='" + activeLine + "']");
       if (el) {
-        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        // Use block: 'nearest' to minimize jumping if already in view
+        el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
       }
     }
   }, [activeLine]);
 
   return (
-    <div className="bg-bg-secondary border border-border rounded-2xl overflow-hidden shadow-sm transition-all hover:border-accent/30 group/code">
-      <div className="flex items-center justify-between bg-bg-tertiary border-b border-border px-6 py-4">
-        <span className="text-[10px] font-bold text-muted uppercase tracking-[0.2em]">
-          Implementation
-        </span>
-        <div className="flex gap-1.5 opacity-30 group-hover/code:opacity-100 transition-opacity">
-          <div className="w-1.5 h-1.5 rounded-full bg-muted"></div>
-          <div className="w-1.5 h-1.5 rounded-full bg-muted"></div>
-          <div className="w-1.5 h-1.5 rounded-full bg-muted"></div>
+    <div
+      className={clsx(
+        'bg-bg-secondary border border-border rounded-2xl overflow-hidden shadow-sm transition-all',
+        !compact && 'hover:border-accent/30 group/code'
+      )}
+    >
+      {!compact && (
+        <div className="flex items-center justify-between bg-bg-tertiary border-b border-border px-6 py-4">
+          <span className="text-[10px] font-bold text-muted uppercase tracking-[0.2em]">
+            Implementation
+          </span>
+          <div className="flex gap-1.5 opacity-30 group-hover/code:opacity-100 transition-opacity">
+            <div className="w-1.5 h-1.5 rounded-full bg-muted"></div>
+            <div className="w-1.5 h-1.5 rounded-full bg-muted"></div>
+            <div className="w-1.5 h-1.5 rounded-full bg-muted"></div>
+          </div>
         </div>
-      </div>
+      )}
 
       <pre
         ref={codeRef}
-        className="overflow-auto max-h-[500px] p-6 text-[13px] font-mono leading-relaxed no-scrollbar"
+        className={clsx(
+          'overflow-auto leading-relaxed no-scrollbar',
+          compact ? 'max-h-[300px] p-4 text-[12px]' : 'max-h-[500px] p-6 text-[13px]'
+        )}
       >
         {lines.map((line, idx) => {
           const lineNumber = idx + 1;
