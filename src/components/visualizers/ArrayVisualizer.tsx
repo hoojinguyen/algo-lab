@@ -12,7 +12,8 @@ export function ArrayVisualizer({ state }: { state: ArrayAlgorithmState }) {
         const isActive = state.activeIndices.includes(idx);
         const height = `${(value / maxValue) * 100}%`;
 
-        let barStyles = 'bg-bg-tertiary/40 backdrop-blur-sm border border-border/50';
+        let barStyles =
+          'bg-bg-tertiary/80 dark:bg-bg-tertiary/40 backdrop-blur-md border border-border';
 
         if (isActive) {
           if (state.swapped) {
@@ -27,15 +28,18 @@ export function ArrayVisualizer({ state }: { state: ArrayAlgorithmState }) {
             key={idx}
             className="flex flex-col items-center justify-end h-full flex-1 group relative"
           >
-            <div className="absolute -top-6 opacity-0 group-hover:opacity-100 transition-opacity text-muted text-[10px] font-mono font-bold tracking-tighter">
-              {value}
-            </div>
             <div
-              className={`w-full rounded-t-lg transition-all duration-300 ease-out relative overflow-hidden ${barStyles}`}
+              className={`w-full rounded-t-lg transition-all duration-300 ease-out relative overflow-visible ${barStyles}`}
               style={{ height }}
             >
+              {/* Value Label - Positioned relative to the bar top */}
+              <div className="absolute -top-6 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity text-muted text-[10px] font-mono font-bold tracking-tighter whitespace-nowrap">
+                {value}
+              </div>
+
               {/* Premium Gradient Overlay */}
-              <div className="absolute inset-0 bg-gradient-to-b from-white/10 to-transparent opacity-50" />
+              <div className="absolute inset-0 bg-gradient-to-b from-white/40 dark:from-white/10 to-transparent opacity-60" />
+              <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/5 dark:from-black/20 to-transparent opacity-40" />
             </div>
           </div>
         );
