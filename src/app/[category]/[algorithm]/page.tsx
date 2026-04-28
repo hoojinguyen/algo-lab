@@ -126,7 +126,7 @@ export default function LessonPage({
           </div>
         )}
 
-        <div className="p-12 max-w-2xl mx-auto w-full">
+        <div className="p-12 max-w-2xl mx-auto w-full space-y-4">
           <TheoryPanel
             name={currentEntry.name}
             category={currentEntry.category}
@@ -135,9 +135,7 @@ export default function LessonPage({
             stable={currentEntry.stable}
           />
 
-          <div className="mb-12">
-            <CodeBlock code={currentEntry.code} activeLine={currentState.codeLine} />
-          </div>
+          <CodeBlock code={currentEntry.code} activeLine={currentState.codeLine} />
 
           {/* Practice Section */}
           <div className="mt-16 pt-8 border-t border-border">
