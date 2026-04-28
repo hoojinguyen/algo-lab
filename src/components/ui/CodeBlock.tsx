@@ -37,11 +37,11 @@ function tokenise(line: string): React.ReactNode {
   }
 
   return tokens.map((t, i) => {
-    let className = 'text-text-primary';
+    let className = 'text-editorial'; // Standard readable text
     if (t.type === 'keyword') className = 'text-accent font-semibold';
     else if (t.type === 'string') className = 'text-warning';
-    else if (t.type === 'number') className = 'text-success';
-    else if (t.type === 'comment') className = 'text-text-muted italic';
+    else if (t.type === 'number') className = 'text-success font-mono';
+    else if (t.type === 'comment') className = 'text-muted italic';
     return (
       <span key={i} className={className}>
         {t.text}
@@ -65,15 +65,15 @@ export function CodeBlock({ code, activeLine }: CodeBlockProps) {
   }, [activeLine]);
 
   return (
-    <div className="bg-zinc-950 border border-zinc-800/50 rounded-2xl overflow-hidden shadow-2xl transition-all hover:border-zinc-700/50">
-      <div className="flex items-center justify-between bg-zinc-900/50 border-b border-zinc-800/50 px-6 py-4">
-        <span className="text-[10px] font-bold text-zinc-500 uppercase tracking-[0.2em]">
+    <div className="bg-bg-secondary border border-border rounded-2xl overflow-hidden shadow-sm transition-all hover:border-accent/30 group/code">
+      <div className="flex items-center justify-between bg-bg-tertiary border-b border-border px-6 py-4">
+        <span className="text-[10px] font-bold text-muted uppercase tracking-[0.2em]">
           Implementation
         </span>
-        <div className="flex gap-1.5">
-          <div className="w-1 h-1 rounded-full bg-zinc-800"></div>
-          <div className="w-1 h-1 rounded-full bg-zinc-800"></div>
-          <div className="w-1 h-1 rounded-full bg-zinc-800"></div>
+        <div className="flex gap-1.5 opacity-30 group-hover/code:opacity-100 transition-opacity">
+          <div className="w-1.5 h-1.5 rounded-full bg-muted"></div>
+          <div className="w-1.5 h-1.5 rounded-full bg-muted"></div>
+          <div className="w-1.5 h-1.5 rounded-full bg-muted"></div>
         </div>
       </div>
 
@@ -88,8 +88,10 @@ export function CodeBlock({ code, activeLine }: CodeBlockProps) {
             <div
               key={idx}
               data-line={lineNumber}
-              className={`flex gap-4 rounded-sm transition-all duration-200 ${
-                isActive ? 'bg-accent/10 border-l-2 border-accent -mx-4 px-3' : '-mx-0'
+              className={`flex gap-4 rounded-sm transition-all duration-300 ${
+                isActive
+                  ? 'bg-accent/5 border-l-2 border-accent -mx-4 px-3'
+                  : '-mx-0 opacity-80 hover:opacity-100'
               }`}
             >
               <span
