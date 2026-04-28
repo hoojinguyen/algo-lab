@@ -1,6 +1,6 @@
 'use client';
 
-import { use, useMemo, useEffect } from 'react';
+import { use, useMemo, useEffect, useState } from 'react';
 import Link from 'next/link';
 import { CheckCircle, ExternalLink, ChevronRight } from 'lucide-react';
 import { useUserProgress } from '@/hooks/useUserProgress';
@@ -10,7 +10,8 @@ import { VisualizerPanel } from '@/components/visualizers/VisualizerPanel';
 import { PlaybackControls } from '@/components/ui/PlaybackControls';
 import { CodeBlock } from '@/components/ui/CodeBlock';
 import { TheoryPanel } from '@/components/ui/TheoryPanel';
-import { FloatingCodePanel } from '@/components/ui/FloatingCodePanel';
+import { motion, AnimatePresence } from 'framer-motion';
+import { X } from 'lucide-react';
 
 export default function LessonPage({
   params,
@@ -75,6 +76,27 @@ export default function LessonPage({
   const { currentState, currentIndex, totalSteps, isPlaying, setIsPlaying, next, prev, reset } =
     usePlayback(states, 500);
 
+  // Use a "manual closed" state to allow users to override the auto-open behavior
+  const [isManualClosed, setIsManualClosed] = useState(false);
+
+  // Derived state: Overlay is open if we are mid-algorithm, unless the user manually closed it
+  const isOverlayOpen =
+    !isManualClosed && (isPlaying || (currentIndex > 0 && currentIndex < totalSteps));
+
+  // Reset manual close state when we return to the start of the algorithm
+  const handlePlayPause = () => {
+    const nextPlaying = !isPlaying;
+    setIsPlaying(nextPlaying);
+    if (nextPlaying) {
+      setIsManualClosed(false);
+    }
+  };
+
+  const handleReset = () => {
+    reset();
+    setIsManualClosed(false);
+  };
+
   if (!currentEntry || !currentState) {
     return (
       <div className="flex flex-col items-center justify-center h-full text-center p-12">
@@ -127,7 +149,38 @@ export default function LessonPage({
           </div>
         )}
 
-        <div className="p-12 max-w-2xl mx-auto w-full space-y-4">
+        <div className="relative p-12 max-w-2xl mx-auto w-full space-y-4">
+          <AnimatePresence>
+            {isOverlayOpen && (
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 10 }}
+                className="absolute inset-0 z-20 bg-bg-primary p-12 overflow-y-auto no-scrollbar"
+              >
+                <div className="flex items-center justify-between mb-8">
+                  <span className="text-[10px] font-bold tracking-[0.2em] uppercase text-accent">
+                    Active Implementation
+                  </span>
+                  <button
+                    onClick={() => setIsManualClosed(true)}
+                    className="p-2 hover:bg-bg-tertiary rounded-full transition-colors text-text-muted hover:text-text-primary"
+                  >
+                    <X size={18} />
+                  </button>
+                </div>
+                <CodeBlock
+                  code={currentEntry.code}
+                  activeLine={currentState.codeLine}
+                  compact={false}
+                />
+                <div className="mt-8 text-sm text-text-muted italic">
+                  Algorithm is currently active. The code above tracks the live execution state.
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
           <TheoryPanel
             name={currentEntry.name}
             category={currentEntry.category}
@@ -197,21 +250,13 @@ export default function LessonPage({
           <VisualizerPanel type={currentEntry.visualizerType} state={currentState} />
         </div>
 
-        {/* Floating Code Companion */}
-        <FloatingCodePanel
-          code={currentEntry.code}
-          activeLine={currentState.codeLine}
-          isVisible={isPlaying}
-          onClose={() => setIsPlaying(false)}
-        />
-
         <div className="h-28 border-t border-border flex flex-col justify-center bg-bg-primary z-10">
           <PlaybackControls
             isPlaying={isPlaying}
-            onPlayPause={() => setIsPlaying(!isPlaying)}
+            onPlayPause={handlePlayPause}
             onNext={next}
             onPrev={prev}
-            onReset={reset}
+            onReset={handleReset}
             isFinished={currentIndex === totalSteps - 1}
             isStart={currentIndex === 0}
           />
