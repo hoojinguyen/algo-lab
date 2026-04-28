@@ -22,7 +22,7 @@ export function TheoryPanel({ name, category, theory, complexity, stable }: Theo
         </span>
       </div>
 
-      <h1 className="text-4xl font-extrabold tracking-tight text-white mb-8 leading-tight">
+      <h1 className="text-4xl font-extrabold tracking-tight text-primary mb-8 leading-tight">
         {name}
       </h1>
 
@@ -35,8 +35,8 @@ export function TheoryPanel({ name, category, theory, complexity, stable }: Theo
           <span
             className={`px-3 py-1.5 text-[10px] font-bold border rounded-full uppercase tracking-widest ${
               stable
-                ? 'text-emerald-400 bg-emerald-400/10 border-emerald-400/20'
-                : 'text-amber-400 bg-amber-400/10 border-amber-400/20'
+                ? 'text-success bg-success/10 border-success/20'
+                : 'text-warning bg-warning/10 border-warning/20'
             }`}
           >
             {stable ? 'Stable' : 'Unstable'}
@@ -44,31 +44,31 @@ export function TheoryPanel({ name, category, theory, complexity, stable }: Theo
         )}
       </div>
 
-      <div className="text-[17px] text-zinc-300 leading-relaxed mb-12 font-medium italic opacity-90 border-l-2 border-zinc-800 pl-8">
+      <div className="text-[17px] text-lead leading-relaxed mb-12 font-medium italic opacity-90 border-l-2 border-border-editorial pl-8">
         {parsed.lead}
       </div>
 
       <div className="space-y-12 mb-16">
         {parsed.sections.map((section, i) => (
           <div key={i} className="group">
-            <h3 className="text-[11px] font-bold uppercase tracking-[0.2em] text-zinc-500 mb-4 group-hover:text-zinc-300 transition-colors">
+            <h3 className="text-[11px] font-bold uppercase tracking-[0.2em] text-muted mb-4 group-hover:text-secondary transition-colors">
               {section.title}
             </h3>
-            <p className="text-base text-zinc-400 leading-relaxed max-w-2xl">{section.content}</p>
+            <p className="text-base text-editorial leading-relaxed max-w-2xl">{section.content}</p>
           </div>
         ))}
       </div>
 
       {parsed.interviewInsight && (
-        <div className="mt-12 mb-8 border-l-4 border-blue-500/50 bg-blue-500/5 py-8 pl-8 pr-6 rounded-r-2xl transition-all hover:bg-blue-500/10 group">
+        <div className="mt-12 mb-8 border-l-4 border-accent/30 bg-callout py-8 pl-8 pr-6 rounded-r-2xl transition-all hover:bg-accent/10 group">
           <div className="flex items-center justify-between mb-5">
-            <span className="text-[11px] font-bold uppercase tracking-[0.2em] text-blue-400">
+            <span className="text-[11px] font-bold uppercase tracking-[0.2em] text-accent">
               Interview Insight
             </span>
-            <div className="w-1.5 h-1.5 rounded-full bg-blue-500/50 group-hover:bg-blue-500 transition-colors"></div>
+            <div className="w-1.5 h-1.5 rounded-full bg-accent/50 group-hover:bg-accent transition-colors"></div>
           </div>
-          <div className="text-[15px] text-zinc-300 leading-relaxed font-medium">
-            <div className="prose prose-invert prose-sm max-w-none prose-p:leading-relaxed prose-code:bg-zinc-800 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:text-zinc-200 prose-code:before:content-none prose-code:after:content-none font-sans">
+          <div className="text-[15px] text-lead leading-relaxed font-medium">
+            <div className="prose prose-sm max-w-none prose-p:leading-relaxed dark:prose-invert prose-code:bg-tertiary prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:text-primary prose-code:before:content-none prose-code:after:content-none font-sans">
               {parsed.interviewInsight}
             </div>
           </div>
@@ -88,10 +88,10 @@ function ComplexityPill({
   type: 'success' | 'warning' | 'error' | 'muted';
 }) {
   const styles = {
-    success: 'text-emerald-400 bg-emerald-400/10 border-emerald-400/20',
-    warning: 'text-amber-400 bg-amber-400/10 border-amber-400/20',
-    error: 'text-rose-400 bg-rose-400/10 border-rose-400/20',
-    muted: 'text-zinc-500 bg-zinc-900 border-zinc-800',
+    success: 'text-success bg-success/10 border-success/20',
+    warning: 'text-warning bg-warning/10 border-warning/20',
+    error: 'text-error bg-error/10 border-error/20',
+    muted: 'text-secondary bg-tertiary border-border-editorial',
   };
 
   return (
