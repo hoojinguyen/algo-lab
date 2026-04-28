@@ -91,7 +91,7 @@ export function CodeBlock({ code, activeLine, compact = false }: CodeBlockProps)
         ref={codeRef}
         className={clsx(
           'overflow-auto leading-relaxed no-scrollbar',
-          compact ? 'max-h-[300px] p-4 text-[12px]' : 'max-h-[500px] p-6 text-[13px]'
+          compact ? 'max-h-[500px] p-4 text-[13px]' : 'max-h-[600px] p-6 text-[14px]'
         )}
       >
         {lines.map((line, idx) => {

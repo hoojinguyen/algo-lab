@@ -135,8 +135,9 @@ export default function LessonPage({
             complexity={currentEntry.complexity}
             stable={currentEntry.stable}
           />
-
-          <CodeBlock code={currentEntry.code} activeLine={currentState.codeLine} />
+          <div className="mt-12">
+            <CodeBlock code={currentEntry.code} />
+          </div>
 
           {/* Practice Section */}
           <div className="mt-16 pt-8 border-t border-border">

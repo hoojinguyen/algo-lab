@@ -30,9 +30,9 @@ export function FloatingCodePanel({
           exit={{ opacity: 0, y: 20, scale: 0.95 }}
           drag
           dragMomentum={false}
-          className="fixed bottom-32 left-8 z-50 w-80 pointer-events-auto"
+          className="fixed top-24 right-12 z-50 w-[480px] pointer-events-auto"
         >
-          <div className="bg-bg-primary/80 backdrop-blur-xl border border-border rounded-2xl shadow-2xl overflow-hidden flex flex-col">
+          <div className="bg-bg-primary/90 backdrop-blur-2xl border-2 border-accent/20 rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.3),0_0_20px_rgba(var(--accent-rgb),0.1)] overflow-hidden flex flex-col transition-colors hover:border-accent/40">
             {/* Header / Drag Handle */}
             <div className="px-4 py-2 bg-bg-tertiary/50 border-b border-border flex items-center justify-between cursor-grab active:cursor-grabbing group">
               <div className="flex items-center gap-2">
