@@ -60,15 +60,14 @@ export function TheoryPanel({ name, category, theory, complexity, stable }: Theo
       </div>
 
       {parsed.interviewInsight && (
-        <div className="mt-6 border border-zinc-800 rounded-2xl overflow-hidden bg-zinc-900/50 backdrop-blur-sm shadow-xl">
-          <div className="px-5 py-3 bg-zinc-900 border-b border-zinc-800 flex items-center justify-between">
-            <span className="text-[11px] font-bold uppercase tracking-wider text-zinc-300">
+        <div className="mt-12 mb-8 border-l-4 border-blue-500/50 bg-blue-500/5 py-8 pl-8 pr-6 rounded-r-2xl transition-all hover:bg-blue-500/10 group">
+          <div className="flex items-center justify-between mb-5">
+            <span className="text-[11px] font-bold uppercase tracking-[0.2em] text-blue-400">
               Interview Insight
             </span>
-            <span className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse"></span>
+            <div className="w-1.5 h-1.5 rounded-full bg-blue-500/50 group-hover:bg-blue-500 transition-colors"></div>
           </div>
-          <div className="px-6 py-6 text-sm text-zinc-400 leading-relaxed">
-            {/* Split by code blocks or just render with better styling */}
+          <div className="text-[15px] text-zinc-300 leading-relaxed font-medium">
             <div className="prose prose-invert prose-sm max-w-none prose-p:leading-relaxed prose-code:bg-zinc-800 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:text-zinc-200 prose-code:before:content-none prose-code:after:content-none font-sans">
               {parsed.interviewInsight}
             </div>
