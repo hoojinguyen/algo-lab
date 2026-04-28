@@ -12,6 +12,10 @@
   --color-success: var(--success);
   --color-warning: var(--warning);
   --color-error: var(--error);
+  --color-text-lead: var(--text-lead);
+  --color-text-editorial: var(--text-editorial);
+  --color-bg-callout: var(--bg-callout);
+  --color-border-editorial: var(--border-editorial);
   --font-sans: var(--font-sans);
   --font-mono: var(--font-mono);
 }
@@ -28,6 +32,10 @@
   --success: #16a34a;
   --warning: #ca8a04;
   --error: #dc2626;
+  --text-lead: #18181b;
+  --text-editorial: #3f3f46;
+  --bg-callout: #eff6ff;
+  --border-editorial: #e4e4e7;
   --font-sans: 'Geist', -apple-system, BlinkMacSystemFont, 'Inter', system-ui, sans-serif;
   --font-mono: 'Geist Mono', 'SF Mono', 'Fira Code', monospace;
 }
@@ -44,6 +52,10 @@
   --success: #22c55e;
   --warning: #eab308;
   --error: #ef4444;
+  --text-lead: #d4d4d8;
+  --text-editorial: #a1a1aa;
+  --bg-callout: rgba(59, 130, 246, 0.05);
+  --border-editorial: #27272a;
 }
 
 body {
