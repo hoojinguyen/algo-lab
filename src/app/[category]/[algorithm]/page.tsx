@@ -10,6 +10,7 @@ import { VisualizerPanel } from '@/components/visualizers/VisualizerPanel';
 import { PlaybackControls } from '@/components/ui/PlaybackControls';
 import { CodeBlock } from '@/components/ui/CodeBlock';
 import { TheoryPanel } from '@/components/ui/TheoryPanel';
+import { FloatingCodePanel } from '@/components/ui/FloatingCodePanel';
 
 export default function LessonPage({
   params,
@@ -194,6 +195,14 @@ export default function LessonPage({
           </div>
           <VisualizerPanel type={currentEntry.visualizerType} state={currentState} />
         </div>
+
+        {/* Floating Code Companion */}
+        <FloatingCodePanel
+          code={currentEntry.code}
+          activeLine={currentState.codeLine}
+          isVisible={isPlaying}
+          onClose={() => setIsPlaying(false)}
+        />
 
         <div className="h-28 border-t border-border flex flex-col justify-center bg-bg-primary z-10">
           <PlaybackControls
