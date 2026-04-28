@@ -17,23 +17,23 @@ export function TheoryPanel({ name, category, theory, complexity, stable }: Theo
   return (
     <div className="flex flex-col animate-in fade-in slide-in-from-bottom-4 duration-700">
       <div className="mb-2">
-        <span className="text-[10px] font-bold tracking-[0.14em] uppercase text-blue-500 dark:text-blue-400">
+        <span className="text-[10px] font-bold tracking-[0.2em] uppercase text-blue-500 dark:text-blue-400">
           {category.replace(/-/g, ' ')}
         </span>
       </div>
 
-      <h1 className="text-4xl font-extrabold tracking-tight text-white mb-6 leading-tight">
+      <h1 className="text-4xl font-extrabold tracking-tight text-white mb-8 leading-tight">
         {name}
       </h1>
 
-      <div className="flex flex-wrap items-center gap-2 mb-8">
+      <div className="flex flex-wrap items-center gap-3 mb-10">
         <ComplexityPill label="best" value={complexity.best} type="success" />
         <ComplexityPill label="avg" value={complexity.average} type="warning" />
         <ComplexityPill label="worst" value={complexity.worst} type="error" />
         <ComplexityPill label="space" value={complexity.space} type="muted" />
         {stable !== undefined && (
           <span
-            className={`px-2 py-1 text-[10px] font-bold border rounded uppercase tracking-wider ${
+            className={`px-3 py-1.5 text-[10px] font-bold border rounded-full uppercase tracking-widest ${
               stable
                 ? 'text-emerald-400 bg-emerald-400/10 border-emerald-400/20'
                 : 'text-amber-400 bg-amber-400/10 border-amber-400/20'
@@ -44,17 +44,17 @@ export function TheoryPanel({ name, category, theory, complexity, stable }: Theo
         )}
       </div>
 
-      <div className="text-lg text-zinc-400 leading-relaxed mb-10 font-medium italic opacity-90 border-l-2 border-zinc-800 pl-6">
+      <div className="text-[17px] text-zinc-300 leading-relaxed mb-12 font-medium italic opacity-90 border-l-2 border-zinc-800 pl-8">
         {parsed.lead}
       </div>
 
-      <div className="space-y-10 mb-12">
+      <div className="space-y-12 mb-16">
         {parsed.sections.map((section, i) => (
           <div key={i} className="group">
-            <h3 className="text-[11px] font-bold uppercase tracking-widest text-zinc-500 mb-3 group-hover:text-zinc-300 transition-colors">
+            <h3 className="text-[11px] font-bold uppercase tracking-[0.2em] text-zinc-500 mb-4 group-hover:text-zinc-300 transition-colors">
               {section.title}
             </h3>
-            <p className="text-sm text-zinc-400 leading-relaxed max-w-xl">{section.content}</p>
+            <p className="text-base text-zinc-400 leading-relaxed max-w-2xl">{section.content}</p>
           </div>
         ))}
       </div>
@@ -97,7 +97,7 @@ function ComplexityPill({
 
   return (
     <span
-      className={`px-2.5 py-1 text-[11px] font-mono font-bold border rounded-md flex items-center gap-2 shadow-sm ${styles[type]}`}
+      className={`px-3 py-1.5 text-[11px] font-mono font-semibold border rounded-full flex items-center gap-2 shadow-sm ${styles[type]}`}
     >
       {value}
       <span className="opacity-50 font-sans font-normal text-[9px] uppercase tracking-tighter">
