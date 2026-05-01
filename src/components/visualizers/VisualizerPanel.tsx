@@ -6,6 +6,7 @@ import {
   TreeAlgorithmState,
   LinkedListAlgorithmState,
   MatrixAlgorithmState,
+  SearchAlgorithmState,
 } from '@/lib/types';
 import { ArrayVisualizer } from './ArrayVisualizer';
 import { GraphVisualizer } from './GraphVisualizer';
@@ -13,6 +14,7 @@ import { TreeVisualizer } from './TreeVisualizer';
 import { LinkedListVisualizer } from './LinkedListVisualizer';
 import { MatrixVisualizer } from './MatrixVisualizer';
 import { ScatterVisualizer } from './ScatterVisualizer';
+import { SearchVisualizer } from './SearchVisualizer';
 interface VisualizerPanelProps {
   type: VisualizerType;
   state: AlgorithmState;
@@ -21,6 +23,9 @@ interface VisualizerPanelProps {
 export function VisualizerPanel({ type, state }: VisualizerPanelProps) {
   switch (type) {
     case 'array':
+      if ('low' in state && 'high' in state) {
+        return <SearchVisualizer state={state as SearchAlgorithmState} />;
+      }
       return <ArrayVisualizer state={state as ArrayAlgorithmState} />;
     case 'graph':
       return <GraphVisualizer state={state as GraphAlgorithmState} />;
