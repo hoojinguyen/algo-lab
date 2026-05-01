@@ -48,6 +48,18 @@ export interface ArrayAlgorithmState extends BaseAlgorithmState {
   swapped: boolean;
 }
 
+export interface SearchAlgorithmState extends BaseAlgorithmState {
+  data: number[];
+  targetValue: number | null;
+  targetIndex: number | null;
+  low: number;
+  high: number;
+  mid: number | null;
+  found: boolean;
+  eliminatedIndices: number[];
+  path: number[]; // Indices of nodes visited in the tree
+}
+
 export interface GraphNode {
   id: string;
   value: number;
@@ -167,6 +179,7 @@ export interface MLGeneratorInput {
 
 export type AlgorithmState =
   | ArrayAlgorithmState
+  | SearchAlgorithmState
   | GraphAlgorithmState
   | TreeAlgorithmState
   | LinkedListAlgorithmState
