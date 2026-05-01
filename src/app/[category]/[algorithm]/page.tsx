@@ -73,8 +73,18 @@ export default function LessonPage({
     return result;
   }, [currentEntry, initialArray, initialPoints]);
 
-  const { currentState, currentIndex, totalSteps, isPlaying, setIsPlaying, next, prev, reset } =
-    usePlayback(states, 500);
+  const {
+    currentState,
+    currentIndex,
+    totalSteps,
+    isPlaying,
+    setIsPlaying,
+    next,
+    prev,
+    reset,
+    speedMultiplier,
+    setSpeedMultiplier,
+  } = usePlayback(states, 500);
 
   // Use a "manual closed" state to allow users to override the auto-open behavior
   const [isManualClosed, setIsManualClosed] = useState(false);
@@ -259,6 +269,8 @@ export default function LessonPage({
             onReset={handleReset}
             isFinished={currentIndex === totalSteps - 1}
             isStart={currentIndex === 0}
+            speedMultiplier={speedMultiplier}
+            onSpeedChange={setSpeedMultiplier}
           />
         </div>
       </section>
