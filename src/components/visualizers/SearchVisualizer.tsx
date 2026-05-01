@@ -2,7 +2,7 @@
 
 import React, { useMemo } from 'react';
 import { SearchAlgorithmState } from '@/lib/types';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 
 interface TreeNode {
   id: number;
