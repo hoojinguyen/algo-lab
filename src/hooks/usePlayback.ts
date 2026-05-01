@@ -1,10 +1,15 @@
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useMemo, useEffect, useCallback, useRef } from 'react';
 import { AlgorithmState } from '../lib/types';
 
 export function usePlayback(states: AlgorithmState[], initialSpeedMs = 500) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
-  const [speedMs, setSpeedMs] = useState(initialSpeedMs);
+  const [speedMultiplier, setSpeedMultiplier] = useState(1);
+
+  const speedMs = useMemo(
+    () => initialSpeedMs / speedMultiplier,
+    [initialSpeedMs, speedMultiplier]
+  );
 
   const isPlayingRef = useRef(isPlaying);
   useEffect(() => {
@@ -50,6 +55,7 @@ export function usePlayback(states: AlgorithmState[], initialSpeedMs = 500) {
     next,
     prev,
     reset,
-    setSpeedMs,
+    speedMultiplier,
+    setSpeedMultiplier,
   };
 }
