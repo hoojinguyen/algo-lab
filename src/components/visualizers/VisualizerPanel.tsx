@@ -18,14 +18,17 @@ import { SearchVisualizer } from './SearchVisualizer';
 interface VisualizerPanelProps {
   type: VisualizerType;
   state: AlgorithmState;
+  id?: string;
   onSelect?: (value: number) => void;
 }
 
-export function VisualizerPanel({ type, state, onSelect }: VisualizerPanelProps) {
+export function VisualizerPanel({ type, state, id, onSelect }: VisualizerPanelProps) {
   switch (type) {
     case 'array':
       if ('low' in state && 'high' in state) {
-        return <SearchVisualizer state={state as SearchAlgorithmState} onSelect={onSelect} />;
+        return (
+          <SearchVisualizer state={state as SearchAlgorithmState} id={id} onSelect={onSelect} />
+        );
       }
       return <ArrayVisualizer state={state as ArrayAlgorithmState} />;
     case 'graph':

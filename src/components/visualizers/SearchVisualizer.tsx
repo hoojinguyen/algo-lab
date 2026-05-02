@@ -15,10 +15,11 @@ interface TreeNode {
 
 interface SearchVisualizerProps {
   state: SearchAlgorithmState;
+  id?: string;
   onSelect?: (value: number) => void;
 }
 
-export function SearchVisualizer({ state, onSelect }: SearchVisualizerProps) {
+export function SearchVisualizer({ state, id, onSelect }: SearchVisualizerProps) {
   const { data, low, high, mid, targetIndex, eliminatedIndices, path, found } = state;
 
   // Build a balanced BST from the sorted array for visualization
@@ -90,82 +91,155 @@ export function SearchVisualizer({ state, onSelect }: SearchVisualizerProps) {
         )}
       </div>
 
-      {/* Tree Visualization (Logical View) */}
-      <div className="flex-1 w-full max-w-4xl relative mt-4">
-        {/* Render Connections first so they appear behind nodes */}
-        <svg className="absolute inset-0 w-full h-full pointer-events-none overflow-visible">
-          {flattenedNodes.map((node) => (
-            <React.Fragment key={`lines-${node.id}`}>
-              {[node.left, node.right].map((child, i) => {
-                if (!child) return null;
-                const x1 = `${(node.index / (data.length - 1)) * 100}%`;
-                const y1 = node.depth * 70 + 20;
-                const x2 = `${(child.index / (data.length - 1)) * 100}%`;
-                const y2 = child.depth * 70 + 20;
+      {/* Main Visualization Area */}
+      <div className="flex-1 w-full max-w-4xl relative mt-4 flex flex-col items-center justify-center">
+        {id === 'linear-search' ? (
+          <div className="flex flex-col items-center gap-8 w-full">
+            {/* Linear Progress / Scanner */}
+            <div className="w-full h-2 bg-bg-tertiary rounded-full overflow-hidden relative border border-border/50">
+              <motion.div
+                initial={false}
+                animate={{
+                  width: `${((mid ?? 0) / (data.length - 1)) * 100}%`,
+                }}
+                className="absolute inset-y-0 left-0 bg-accent shadow-[0_0_15px_rgba(37,99,235,0.3)]"
+              />
+              {/* Scanner Line */}
+              {mid !== null && (
+                <motion.div
+                  animate={{
+                    left: `${(mid / (data.length - 1)) * 100}%`,
+                  }}
+                  className="absolute inset-y-0 w-1 bg-white z-10 shadow-[0_0_10px_white]"
+                />
+              )}
+            </div>
 
-                const isPath = path.includes(node.index) && path.includes(child.index);
-                const isEliminated = eliminatedIndices.includes(child.index);
+            <div className="flex flex-wrap justify-center gap-4 max-w-2xl">
+              {data.map((val, idx) => {
+                const isActive = idx === mid;
+                const isVisited = path.includes(idx);
+                const isTarget = idx === targetIndex;
+                const isEliminated = eliminatedIndices.includes(idx);
 
                 return (
-                  <motion.line
-                    key={`line-${node.id}-${child.id}`}
-                    x1={x1}
-                    y1={y1}
-                    x2={x2}
-                    y2={y2}
-                    stroke={isPath ? 'var(--accent)' : 'var(--border)'}
-                    strokeWidth={isPath ? 2 : 1}
-                    initial={{ pathLength: 0, opacity: 0 }}
+                  <motion.div
+                    key={idx}
+                    initial={false}
                     animate={{
-                      pathLength: 1,
-                      opacity: isEliminated ? 0.1 : isPath ? 0.8 : 0.3,
+                      scale: isActive ? 1.2 : 1,
+                      opacity: isEliminated ? 0.3 : 1,
                     }}
-                    transition={{ duration: 0.5 }}
-                  />
+                    className="relative cursor-pointer"
+                    onClick={() => onSelect?.(val)}
+                  >
+                    <div
+                      className={`w-14 h-14 rounded-2xl border-2 flex flex-col items-center justify-center transition-all duration-500 ${
+                        isActive
+                          ? 'bg-accent border-accent text-white shadow-xl shadow-accent/30 z-10'
+                          : isTarget && found
+                            ? 'bg-success border-success text-white shadow-xl shadow-success/30'
+                            : isVisited
+                              ? 'bg-bg-tertiary border-accent/40 text-text-primary'
+                              : 'bg-bg-secondary border-border text-text-muted hover:border-accent/50'
+                      }`}
+                    >
+                      <span className="text-lg font-bold">{val}</span>
+                      <span className="text-[9px] opacity-60 font-mono">i={idx}</span>
+                    </div>
+                    {isActive && (
+                      <motion.div
+                        layoutId="active-marker"
+                        className="absolute -top-6 left-1/2 -translate-x-1/2 text-accent font-bold text-xs"
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                      >
+                        SCANNING
+                      </motion.div>
+                    )}
+                  </motion.div>
                 );
               })}
-            </React.Fragment>
-          ))}
-        </svg>
+            </div>
+          </div>
+        ) : (
+          <>
+            {/* Render Connections first so they appear behind nodes */}
+            <svg className="absolute inset-0 w-full h-full pointer-events-none overflow-visible">
+              {flattenedNodes.map((node) => (
+                <React.Fragment key={`lines-${node.id}`}>
+                  {[node.left, node.right].map((child, i) => {
+                    if (!child) return null;
+                    const x1 = `${(node.index / (data.length - 1)) * 100}%`;
+                    const y1 = node.depth * 70 + 20;
+                    const x2 = `${(child.index / (data.length - 1)) * 100}%`;
+                    const y2 = child.depth * 70 + 20;
 
-        {/* Render Nodes */}
-        {flattenedNodes.map((node) => {
-          const isActive = node.index === mid;
-          const isVisited = path.includes(node.index);
-          const isTarget = node.index === targetIndex;
-          const isEliminated = eliminatedIndices.includes(node.index);
-          const xPos = (node.index / (data.length - 1)) * 100;
-          const yPos = node.depth * 70;
+                    const isPath = path.includes(node.index) && path.includes(child.index);
+                    const isEliminated = eliminatedIndices.includes(child.index);
 
-          return (
-            <motion.div
-              key={node.id}
-              initial={false}
-              animate={{
-                left: `${xPos}%`,
-                top: `${yPos}px`,
-                scale: isActive ? 1.15 : 1,
-                opacity: isEliminated ? 0.2 : 1,
-              }}
-              className="absolute -translate-x-1/2 cursor-pointer z-10"
-              onClick={() => onSelect?.(node.value)}
-            >
-              <div
-                className={`w-10 h-10 rounded-full border-2 flex items-center justify-center text-xs font-bold transition-all duration-500 ${
-                  isActive
-                    ? 'bg-accent border-accent text-white shadow-lg shadow-accent/40'
-                    : isTarget && found
-                      ? 'bg-success border-success text-white shadow-lg shadow-success/40'
-                      : isVisited
-                        ? 'bg-bg-tertiary border-accent/40 text-text-primary'
-                        : 'bg-bg-secondary border-border text-text-muted hover:border-accent/50'
-                }`}
-              >
-                {node.value}
-              </div>
-            </motion.div>
-          );
-        })}
+                    return (
+                      <motion.line
+                        key={`line-${node.id}-${child.id}`}
+                        x1={x1}
+                        y1={y1}
+                        x2={x2}
+                        y2={y2}
+                        stroke={isPath ? 'var(--accent)' : 'var(--border)'}
+                        strokeWidth={isPath ? 2 : 1}
+                        initial={{ pathLength: 0, opacity: 0 }}
+                        animate={{
+                          pathLength: 1,
+                          opacity: isEliminated ? 0.1 : isPath ? 0.8 : 0.3,
+                        }}
+                        transition={{ duration: 0.5 }}
+                      />
+                    );
+                  })}
+                </React.Fragment>
+              ))}
+            </svg>
+
+            {/* Render Nodes */}
+            {flattenedNodes.map((node) => {
+              const isActive = node.index === mid;
+              const isVisited = path.includes(node.index);
+              const isTarget = node.index === targetIndex;
+              const isEliminated = eliminatedIndices.includes(node.index);
+              const xPos = (node.index / (data.length - 1)) * 100;
+              const yPos = node.depth * 70;
+
+              return (
+                <motion.div
+                  key={node.id}
+                  initial={false}
+                  animate={{
+                    left: `${xPos}%`,
+                    top: `${yPos}px`,
+                    scale: isActive ? 1.15 : 1,
+                    opacity: isEliminated ? 0.2 : 1,
+                  }}
+                  className="absolute -translate-x-1/2 cursor-pointer z-10"
+                  onClick={() => onSelect?.(node.value)}
+                >
+                  <div
+                    className={`w-10 h-10 rounded-full border-2 flex items-center justify-center text-xs font-bold transition-all duration-500 ${
+                      isActive
+                        ? 'bg-accent border-accent text-white shadow-lg shadow-accent/40'
+                        : isTarget && found
+                          ? 'bg-success border-success text-white shadow-lg shadow-success/40'
+                          : isVisited
+                            ? 'bg-bg-tertiary border-accent/40 text-text-primary'
+                            : 'bg-bg-secondary border-border text-text-muted hover:border-accent/50'
+                    }`}
+                  >
+                    {node.value}
+                  </div>
+                </motion.div>
+              );
+            })}
+          </>
+        )}
       </div>
 
       {/* Array Visualization (Physical View) */}

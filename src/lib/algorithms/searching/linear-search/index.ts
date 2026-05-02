@@ -34,51 +34,81 @@ export const linearSearchEntry: AlgorithmEntry = {
     },
   ],
   stable: true,
-  *generator(initialArray: number[], target?: number): Generator<AlgorithmState> {
+  *generator(initialArray: number[], target?: number): Generator<SearchAlgorithmState> {
     const data = [...initialArray];
 
     yield {
-      data,
-      activeIndices: [],
+      step: 0,
       description:
         target === undefined ? 'Select a target element to begin' : `Searching for ${target}`,
+      data,
+      targetValue: target ?? null,
+      targetIndex: target !== undefined ? data.indexOf(target) : null,
+      low: 0,
+      high: data.length - 1,
+      mid: null,
+      found: false,
+      eliminatedIndices: [],
+      path: [],
       codeLine: 1,
-      step: 0,
-      swapped: false,
     };
 
     if (target === undefined) return;
 
+    const path: number[] = [];
+    const eliminatedIndices: number[] = [];
+
     for (let i = 0; i < data.length; i++) {
+      path.push(i);
       yield {
-        data,
-        activeIndices: [i],
+        step: i * 2 + 1,
         description: `Checking index ${i}: ${data[i]} === ${target}?`,
+        data,
+        targetValue: target,
+        targetIndex: data.indexOf(target),
+        low: i,
+        high: data.length - 1,
+        mid: i,
+        found: false,
+        eliminatedIndices: [...eliminatedIndices],
+        path: [...path],
         codeLine: 3,
-        step: i + 1,
-        swapped: false,
       };
 
       if (data[i] === target) {
         yield {
-          data,
-          activeIndices: [i],
+          step: i * 2 + 2,
           description: `Found ${target} at index ${i}!`,
+          data,
+          targetValue: target,
+          targetIndex: i,
+          low: i,
+          high: i,
+          mid: i,
+          found: true,
+          eliminatedIndices: data.map((_, idx) => idx).filter((idx) => idx !== i),
+          path: [...path],
           codeLine: 4,
-          step: i + 2,
-          swapped: true, // Use swapped to highlight success color
         };
         return;
       }
+
+      eliminatedIndices.push(i);
     }
 
     yield {
-      data,
-      activeIndices: [],
+      step: data.length * 2 + 1,
       description: `${target} not found in the array`,
+      data,
+      targetValue: target,
+      targetIndex: -1,
+      low: data.length,
+      high: data.length - 1,
+      mid: null,
+      found: false,
+      eliminatedIndices: data.map((_, idx) => idx),
+      path: [...path],
       codeLine: 7,
-      step: data.length + 1,
-      swapped: false,
     };
   },
 };

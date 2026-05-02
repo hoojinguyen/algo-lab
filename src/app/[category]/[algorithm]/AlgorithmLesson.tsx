@@ -259,6 +259,7 @@ export function AlgorithmLesson({
             {currentState.description}
           </div>
           <VisualizerPanel
+            id={currentEntry.id}
             type={currentEntry.visualizerType}
             state={currentState}
             onSelect={(val) => {
