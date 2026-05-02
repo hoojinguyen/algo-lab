@@ -93,7 +93,7 @@ export function SearchVisualizer({ state, id, onSelect }: SearchVisualizerProps)
 
       {/* Main Visualization Area */}
       <div className="flex-1 w-full max-w-4xl relative mt-4 flex flex-col items-center justify-center">
-        {id === 'linear-search' ? (
+        {id === 'linear-search' || id === 'jump-search' ? (
           <div className="flex flex-col items-center gap-8 w-full">
             {/* Linear Progress / Scanner */}
             <div className="w-full h-2 bg-bg-tertiary rounded-full overflow-hidden relative border border-border/50">
@@ -104,6 +104,22 @@ export function SearchVisualizer({ state, id, onSelect }: SearchVisualizerProps)
                 }}
                 className="absolute inset-y-0 left-0 bg-accent shadow-[0_0_15px_rgba(37,99,235,0.3)]"
               />
+
+              {/* Block markers for Jump Search */}
+              {id === 'jump-search' && (
+                <div className="absolute inset-0 flex justify-between px-[2%]">
+                  {Array.from({ length: Math.floor(Math.sqrt(data.length)) + 1 }).map((_, i) => (
+                    <div
+                      key={i}
+                      className="h-full w-[1px] bg-border/40 z-0"
+                      style={{
+                        left: `${((i * Math.floor(Math.sqrt(data.length))) / (data.length - 1)) * 100}%`,
+                      }}
+                    />
+                  ))}
+                </div>
+              )}
+
               {/* Scanner Line */}
               {mid !== null && (
                 <motion.div
@@ -121,6 +137,7 @@ export function SearchVisualizer({ state, id, onSelect }: SearchVisualizerProps)
                 const isVisited = path.includes(idx);
                 const isTarget = idx === targetIndex;
                 const isEliminated = eliminatedIndices.includes(idx);
+                const isInBlock = idx >= low && idx <= high && id === 'jump-search' && mid === null;
 
                 return (
                   <motion.div
@@ -139,9 +156,11 @@ export function SearchVisualizer({ state, id, onSelect }: SearchVisualizerProps)
                           ? 'bg-accent border-accent text-white shadow-xl shadow-accent/30 z-10'
                           : isTarget && found
                             ? 'bg-success border-success text-white shadow-xl shadow-success/30'
-                            : isVisited
-                              ? 'bg-bg-tertiary border-accent/40 text-text-primary'
-                              : 'bg-bg-secondary border-border text-text-muted hover:border-accent/50'
+                            : isInBlock
+                              ? 'bg-accent/10 border-accent/40 text-text-primary'
+                              : isVisited
+                                ? 'bg-bg-tertiary border-accent/40 text-text-primary'
+                                : 'bg-bg-secondary border-border text-text-muted hover:border-accent/50'
                       }`}
                     >
                       <span className="text-lg font-bold">{val}</span>
@@ -150,11 +169,11 @@ export function SearchVisualizer({ state, id, onSelect }: SearchVisualizerProps)
                     {isActive && (
                       <motion.div
                         layoutId="active-marker"
-                        className="absolute -top-6 left-1/2 -translate-x-1/2 text-accent font-bold text-xs"
+                        className="absolute -top-6 left-1/2 -translate-x-1/2 text-accent font-bold text-xs whitespace-nowrap"
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
                       >
-                        SCANNING
+                        {state.phase === 'jump' ? 'JUMPING' : 'SCANNING'}
                       </motion.div>
                     )}
                   </motion.div>

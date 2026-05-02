@@ -47,91 +47,157 @@ export const jumpSearchEntry: AlgorithmEntry = {
     },
   ],
   stable: true,
-  *generator(initialArray: number[], target?: number): Generator<AlgorithmState> {
+  *generator(initialArray: number[], target?: number): Generator<SearchAlgorithmState> {
     const data = [...initialArray].sort((a, b) => a - b);
     const n = data.length;
     const stepSize = Math.floor(Math.sqrt(n));
 
     yield {
-      data,
-      activeIndices: [],
+      step: 0,
       description:
         target === undefined ? 'Select a target element to begin' : `Searching for ${target}`,
+      data,
+      targetValue: target ?? null,
+      targetIndex: target !== undefined ? data.indexOf(target) : null,
+      low: 0,
+      high: n - 1,
+      mid: null,
+      found: false,
+      eliminatedIndices: [],
+      path: [],
       codeLine: 1,
-      step: 0,
-      swapped: false,
     };
 
     if (target === undefined) return;
 
     let prev = 0;
     let step = stepSize;
+    const path: number[] = [];
+    const eliminatedIndices: number[] = [];
 
     // Jump Phase
     while (data[Math.min(step, n) - 1] < target) {
+      const jumpIdx = Math.min(step, n) - 1;
+      path.push(jumpIdx);
+
       yield {
+        step: path.length,
+        description: `Jumping to index ${jumpIdx}: ${data[jumpIdx]} < ${target}`,
         data,
-        activeIndices: [Math.min(step, n) - 1],
-        description: `Jumping to index ${Math.min(step, n) - 1}: ${data[Math.min(step, n) - 1]} < ${target}`,
+        targetValue: target,
+        targetIndex: data.indexOf(target),
+        low: prev,
+        high: n - 1,
+        mid: jumpIdx,
+        found: false,
+        eliminatedIndices: [...eliminatedIndices],
+        path: [...path],
+        phase: 'jump',
         codeLine: 7,
-        step: step / stepSize,
-        swapped: false,
       };
+
+      // All elements in the skipped block are smaller than target
+      for (let i = prev; i < jumpIdx; i++) {
+        eliminatedIndices.push(i);
+      }
+
       prev = step;
       step += stepSize;
+
       if (prev >= n) {
         yield {
-          data,
-          activeIndices: [],
-          description: 'Target exceeds array bounds',
-          codeLine: 10,
           step: 99,
-          swapped: false,
+          description: 'Target exceeds array bounds',
+          data,
+          targetValue: target,
+          targetIndex: -1,
+          low: n,
+          high: n - 1,
+          mid: null,
+          found: false,
+          eliminatedIndices: data.map((_, i) => i),
+          path: [...path],
+          phase: 'jump',
+          codeLine: 10,
         };
         return;
       }
     }
 
-    // Linear Search Phase
+    // Identify the block
+    const blockEnd = Math.min(step, n) - 1;
     yield {
-      data,
-      activeIndices: Array.from({ length: Math.min(step, n) - prev }, (_, i) => prev + i),
-      description: `Target in block [${prev}, ${Math.min(step, n) - 1}]. Starting linear search.`,
-      codeLine: 14,
       step: 10,
-      swapped: false,
+      description: `Target in block [${prev}, ${blockEnd}]. Starting linear search.`,
+      data,
+      targetValue: target,
+      targetIndex: data.indexOf(target),
+      low: prev,
+      high: blockEnd,
+      mid: null,
+      found: false,
+      eliminatedIndices: [...eliminatedIndices],
+      path: [...path],
+      phase: 'scan',
+      codeLine: 14,
     };
 
-    for (let i = prev; i < Math.min(step, n); i++) {
+    // Linear Search Phase within the block
+    for (let i = prev; i <= blockEnd; i++) {
+      path.push(i);
       yield {
-        data,
-        activeIndices: [i],
-        description: `Checking index ${i}: ${data[i]} === ${target}?`,
-        codeLine: 14,
         step: 11 + (i - prev),
-        swapped: false,
+        description: `Checking index ${i}: ${data[i]} === ${target}?`,
+        data,
+        targetValue: target,
+        targetIndex: data.indexOf(target),
+        low: prev,
+        high: blockEnd,
+        mid: i,
+        found: false,
+        eliminatedIndices: [...eliminatedIndices],
+        path: [...path],
+        phase: 'scan',
+        codeLine: 14,
       };
 
       if (data[i] === target) {
+        // Found! Eliminate everything else
+        const finalEliminated = data.map((_, idx) => idx).filter((idx) => idx !== i);
         yield {
-          data,
-          activeIndices: [i],
-          description: `Found ${target} at index ${i}!`,
-          codeLine: 19,
           step: 20,
-          swapped: true,
+          description: `Found ${target} at index ${i}!`,
+          data,
+          targetValue: target,
+          targetIndex: i,
+          low: i,
+          high: i,
+          mid: i,
+          found: true,
+          eliminatedIndices: finalEliminated,
+          path: [...path],
+          codeLine: 19,
         };
         return;
       }
+
+      eliminatedIndices.push(i);
     }
 
     yield {
-      data,
-      activeIndices: [],
-      description: `${target} not found`,
-      codeLine: 20,
       step: 21,
-      swapped: false,
+      description: `${target} not found in the array`,
+      data,
+      targetValue: target,
+      targetIndex: -1,
+      low: n,
+      high: n - 1,
+      mid: null,
+      found: false,
+      eliminatedIndices: data.map((_, i) => i),
+      path: [...path],
+      phase: 'scan',
+      codeLine: 20,
     };
   },
 };

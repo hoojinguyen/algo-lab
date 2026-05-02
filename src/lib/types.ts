@@ -58,6 +58,7 @@ export interface SearchAlgorithmState extends BaseAlgorithmState {
   found: boolean;
   eliminatedIndices: number[];
   path: number[]; // Indices of nodes visited in the tree
+  phase?: 'jump' | 'scan' | 'linear';
 }
 
 export interface GraphNode {

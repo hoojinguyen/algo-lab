@@ -50,6 +50,7 @@ export const linearSearchEntry: AlgorithmEntry = {
       found: false,
       eliminatedIndices: [],
       path: [],
+      phase: 'linear',
       codeLine: 1,
     };
 
@@ -72,6 +73,7 @@ export const linearSearchEntry: AlgorithmEntry = {
         found: false,
         eliminatedIndices: [...eliminatedIndices],
         path: [...path],
+        phase: 'linear',
         codeLine: 3,
       };
 
@@ -88,6 +90,7 @@ export const linearSearchEntry: AlgorithmEntry = {
           found: true,
           eliminatedIndices: data.map((_, idx) => idx).filter((idx) => idx !== i),
           path: [...path],
+          phase: 'linear',
           codeLine: 4,
         };
         return;
@@ -108,6 +111,7 @@ export const linearSearchEntry: AlgorithmEntry = {
       found: false,
       eliminatedIndices: data.map((_, idx) => idx),
       path: [...path],
+      phase: 'linear',
       codeLine: 7,
     };
   },
