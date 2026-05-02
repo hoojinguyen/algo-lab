@@ -6,21 +6,58 @@ export const binarySearchEntry: AlgorithmEntry = {
   category: 'searching',
   visualizerType: 'array',
   tags: ['divide-and-conquer'],
-  complexity: { best: 'O(1)', average: 'O(log n)', worst: 'O(log n)', space: 'O(1)' },
-  theory: 'Search a sorted array by repeatedly dividing the search interval in half.',
+  complexity: {
+    best: 'O(1)',
+    average: 'O(log n)',
+    worst: 'O(log n)',
+    space: 'O(1)',
+  },
+  theory: `Binary Search is a highly efficient algorithm for finding an item from a **sorted list** of items. It works by repeatedly dividing in half the portion of the list that could contain the item, until you've narrowed down the possible locations to just one.
+
+**How it Works:** Calculate the middle index of the current search range. Compare the middle element with the target value. If they are equal, the search is complete. If the target is smaller, repeat on the left half. If larger, repeat on the right half.
+
+**The Logarithmic Advantage:** This "halving" process is what gives Binary Search its logarithmic time complexity, making it incredibly fast even for massive datasets (e.g., searching 1 billion items in just 30 comparisons).
+
+**Key Interview Insight:** When calculating the middle index, use \`low + (high - low) / 2\` instead of \`(low + high) / 2\` to avoid potential integer overflow in languages with fixed-size integers (like Java or C++). While JavaScript handles this safely with large numbers, this is a classic interview question about robustness.`,
   code: `function binarySearch(arr, target) {
   let low = 0;
   let high = arr.length - 1;
 
   while (low <= high) {
-    let mid = Math.floor((low + high) / 2);
-    if (arr[mid] === target) return mid;
-    if (arr[mid] < target) low = mid + 1;
-    else high = mid - 1;
+    // Use Math.floor for integer division
+    const mid = Math.floor(low + (high - low) / 2);
+    const guess = arr[mid];
+
+    if (guess === target) {
+      return mid; // Found it!
+    }
+
+    if (guess > target) {
+      high = mid - 1; // Target is in the left half
+    } else {
+      low = mid + 1; // Target is in the right half
+    }
   }
-  return -1;
+
+  return -1; // Target not found
 }`,
-  leetcode: [],
+  leetcode: [
+    {
+      title: 'Binary Search',
+      url: 'https://leetcode.com/problems/binary-search/',
+      difficulty: 'easy',
+    },
+    {
+      title: 'Search in Rotated Sorted Array',
+      url: 'https://leetcode.com/problems/search-in-rotated-sorted-array/',
+      difficulty: 'medium',
+    },
+    {
+      title: 'Find First and Last Position of Element',
+      url: 'https://leetcode.com/problems/find-first-and-last-position-of-element-in-sorted-array/',
+      difficulty: 'medium',
+    },
+  ],
   stable: true,
   *generator(initialArray: number[], target?: number): Generator<SearchAlgorithmState> {
     const data = [...initialArray].sort((a, b) => a - b);
@@ -65,7 +102,7 @@ export const binarySearchEntry: AlgorithmEntry = {
         found: false,
         eliminatedIndices: [...eliminatedIndices],
         path: [...path],
-        codeLine: 6,
+        codeLine: 7,
       };
 
       if (data[mid] === target) {
@@ -81,7 +118,7 @@ export const binarySearchEntry: AlgorithmEntry = {
           found: true,
           eliminatedIndices: data.map((_, i) => i).filter((i) => i !== mid),
           path: [...path],
-          codeLine: 7,
+          codeLine: 11,
         };
         return;
       }
@@ -104,7 +141,7 @@ export const binarySearchEntry: AlgorithmEntry = {
           found: false,
           eliminatedIndices: [...eliminatedIndices],
           path: [...path],
-          codeLine: 8,
+          codeLine: 17,
         };
       } else {
         // Eliminate right side
@@ -124,7 +161,7 @@ export const binarySearchEntry: AlgorithmEntry = {
           found: false,
           eliminatedIndices: [...eliminatedIndices],
           path: [...path],
-          codeLine: 9,
+          codeLine: 15,
         };
       }
     }
@@ -141,7 +178,7 @@ export const binarySearchEntry: AlgorithmEntry = {
       found: false,
       eliminatedIndices: data.map((_, i) => i),
       path: [...path],
-      codeLine: 11,
+      codeLine: 21,
     };
   },
 };

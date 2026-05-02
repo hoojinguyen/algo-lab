@@ -1,0 +1,287 @@
+'use client';
+
+import { use, useMemo, useEffect, useState } from 'react';
+import Link from 'next/link';
+import { CheckCircle, ExternalLink, ChevronRight } from 'lucide-react';
+import { useUserProgress } from '@/hooks/useUserProgress';
+import { ALGORITHM_REGISTRY } from '@/lib/algorithms/registry';
+import { usePlayback } from '@/hooks/usePlayback';
+import { VisualizerPanel } from '@/components/visualizers/VisualizerPanel';
+import { PlaybackControls } from '@/components/ui/PlaybackControls';
+import { CodeBlock } from '@/components/ui/CodeBlock';
+import { TheoryPanel } from '@/components/ui/TheoryPanel';
+import { motion, AnimatePresence } from 'framer-motion';
+import { X } from 'lucide-react';
+
+export function AlgorithmLesson({
+  params,
+}: {
+  params: Promise<{ category: string; algorithm: string }>;
+}) {
+  const resolvedParams = use(params);
+  const entry = ALGORITHM_REGISTRY[resolvedParams.algorithm];
+
+  // Validation: Ensure algorithm belongs to the category in the URL
+  const isValid = entry && entry.category === resolvedParams.category;
+  const currentEntry = isValid ? entry : null;
+
+  const { progress, markCompleted, addRecentlyStudied, isMounted } = useUserProgress();
+  const isCompleted = !!(
+    isMounted &&
+    currentEntry &&
+    progress.completedAlgorithms.includes(currentEntry.id)
+  );
+
+  useEffect(() => {
+    if (currentEntry) {
+      addRecentlyStudied(currentEntry.id);
+    }
+  }, [currentEntry, addRecentlyStudied]);
+
+  const initialArray = useMemo(() => [9, 14, 5, 11, 3, 22, 1, 8], []);
+  const [targetValue, setTargetValue] = useState<number | null>(null);
+
+  const initialPoints = useMemo(
+    () => [
+      { id: '1', x: 1, y: 1.5 },
+      { id: '2', x: 2, y: 3.8 },
+      { id: '3', x: 3, y: 3.2 },
+      { id: '4', x: 4, y: 6.5 },
+      { id: '5', x: 5, y: 5.9 },
+      { id: '6', x: 6, y: 8.1 },
+      { id: '7', x: 7, y: 9.5 },
+    ],
+    []
+  );
+
+  const states = useMemo(() => {
+    if (!currentEntry) return [];
+
+    let generator;
+    if (currentEntry.category === 'ai-ml') {
+      generator = currentEntry.generator({
+        points: initialPoints,
+        hyperparameters: { learningRate: 0.01, maxIterations: 50 },
+      });
+    } else {
+      generator = currentEntry.generator(initialArray, targetValue ?? undefined);
+    }
+
+    const result = [];
+    for (const state of generator) {
+      result.push(state);
+    }
+    return result;
+  }, [currentEntry, initialArray, initialPoints, targetValue]);
+
+  const {
+    currentState,
+    currentIndex,
+    totalSteps,
+    isPlaying,
+    setIsPlaying,
+    next,
+    prev,
+    reset,
+    speedMultiplier,
+    setSpeedMultiplier,
+  } = usePlayback(states, 500);
+
+  // Use a "manual closed" state to allow users to override the auto-open behavior
+  const [isManualClosed, setIsManualClosed] = useState(false);
+
+  // Derived state: Overlay is open if we are mid-algorithm, unless the user manually closed it
+  const isOverlayOpen =
+    !isManualClosed && (isPlaying || (currentIndex > 0 && currentIndex < totalSteps));
+
+  // Reset manual close state when we return to the start of the algorithm
+  const handlePlayPause = () => {
+    const nextPlaying = !isPlaying;
+    setIsPlaying(nextPlaying);
+    if (nextPlaying) {
+      setIsManualClosed(false);
+    }
+  };
+
+  const handleReset = () => {
+    reset();
+    setIsManualClosed(false);
+  };
+
+  if (!currentEntry || !currentState) {
+    return (
+      <div className="flex flex-col items-center justify-center h-full text-center p-12">
+        <h2 className="text-2xl font-semibold mb-2">Algorithm Not Found</h2>
+        <p className="text-text-muted mb-8">
+          The algorithm you&apos;re looking for doesn&apos;t exist or isn&apos;t in this category.
+        </p>
+        <Link
+          href="/"
+          className="px-6 py-2 bg-text-primary text-bg-primary rounded-lg font-medium hover:opacity-90 transition-opacity"
+        >
+          Return to Dashboard
+        </Link>
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex h-full w-full">
+      {/* Left Column: Theory & Code */}
+      <section className="w-[55%] h-full border-r border-border overflow-y-auto no-scrollbar bg-bg-primary flex flex-col">
+        {/* TopBar */}
+        {currentEntry && (
+          <div className="px-12 py-6 border-b border-border flex items-center justify-between sticky top-0 bg-bg-primary/95 backdrop-blur z-10">
+            <div className="flex items-center gap-2 text-sm text-text-muted">
+              <Link href="/" className="hover:text-text-primary transition-colors">
+                Home
+              </Link>
+              <ChevronRight size={14} />
+              <span className="capitalize">{currentEntry.category.replace('-', ' ')}</span>
+              <ChevronRight size={14} />
+              <span className="text-text-primary font-medium">{currentEntry.name}</span>
+            </div>
+            <div className="flex items-center gap-4">
+              {isMounted && (
+                <button
+                  onClick={() => markCompleted(currentEntry.id)}
+                  disabled={isCompleted}
+                  className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
+                    isCompleted
+                      ? 'bg-success/10 text-success cursor-default'
+                      : 'bg-bg-tertiary text-text-secondary hover:text-text-primary hover:bg-border'
+                  }`}
+                >
+                  <CheckCircle size={16} />
+                  {isCompleted ? 'Completed' : 'Mark Complete'}
+                </button>
+              )}
+            </div>
+          </div>
+        )}
+
+        <div className="relative p-12 max-w-2xl mx-auto w-full space-y-4">
+          <AnimatePresence>
+            {isOverlayOpen && (
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 10 }}
+                className="absolute inset-0 z-20 bg-bg-primary p-12 overflow-y-auto no-scrollbar"
+              >
+                <div className="flex items-center justify-between mb-8">
+                  <span className="text-[10px] font-bold tracking-[0.2em] uppercase text-accent">
+                    Active Implementation
+                  </span>
+                  <button
+                    onClick={() => setIsManualClosed(true)}
+                    className="p-2 hover:bg-bg-tertiary rounded-full transition-colors text-text-muted hover:text-text-primary"
+                  >
+                    <X size={18} />
+                  </button>
+                </div>
+                <CodeBlock
+                  code={currentEntry.code}
+                  activeLine={currentState.codeLine}
+                  compact={false}
+                />
+                <div className="mt-8 text-sm text-text-muted italic">
+                  Algorithm is currently active. The code above tracks the live execution state.
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          <TheoryPanel
+            name={currentEntry.name}
+            category={currentEntry.category}
+            theory={currentEntry.theory}
+            complexity={currentEntry.complexity}
+            stable={currentEntry.stable}
+          />
+          <div className="mt-12">
+            <CodeBlock code={currentEntry.code} />
+          </div>
+
+          {/* Practice Section */}
+          <div className="mt-16 pt-8 border-t border-border">
+            <h3 className="text-xl font-medium mb-6">Practice on LeetCode</h3>
+            {currentEntry.leetcode && currentEntry.leetcode.length > 0 ? (
+              <div className="grid grid-cols-1 gap-3">
+                {currentEntry.leetcode.map((problem) => (
+                  <a
+                    key={problem.title}
+                    href={problem.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center justify-between p-4 bg-bg-secondary border border-border rounded-xl hover:border-accent transition-colors group"
+                  >
+                    <div className="flex items-center gap-4">
+                      <span
+                        className={`px-2.5 py-1 rounded text-xs font-medium uppercase tracking-wider ${
+                          problem.difficulty === 'easy'
+                            ? 'bg-success/10 text-success'
+                            : problem.difficulty === 'medium'
+                              ? 'bg-warning/10 text-warning'
+                              : 'bg-error/10 text-error'
+                        }`}
+                      >
+                        {problem.difficulty}
+                      </span>
+                      <span className="font-medium text-text-primary group-hover:text-accent transition-colors">
+                        {problem.title}
+                      </span>
+                    </div>
+                    <ExternalLink
+                      size={18}
+                      className="text-text-muted group-hover:text-accent transition-colors"
+                    />
+                  </a>
+                ))}
+              </div>
+            ) : (
+              <div className="p-6 bg-bg-secondary rounded-xl border border-border text-center">
+                <p className="text-text-muted">No specific practice problems mapped yet.</p>
+              </div>
+            )}
+          </div>
+        </div>
+      </section>
+
+      {/* Right Column: Visualizer */}
+      <section className="flex-1 h-full flex flex-col relative bg-bg-secondary">
+        <div className="absolute top-6 right-6 px-3 py-1 text-xs font-semibold tracking-widest text-text-muted uppercase border border-border rounded-full bg-bg-primary">
+          Lab
+        </div>
+
+        <div className="flex-1 flex flex-col justify-center items-center">
+          <div className="mb-8 p-4 bg-bg-tertiary border border-border rounded-lg text-text-primary text-center min-h-[60px] min-w-[300px] flex items-center justify-center font-medium shadow-sm">
+            {currentState.description}
+          </div>
+          <VisualizerPanel
+            type={currentEntry.visualizerType}
+            state={currentState}
+            onSelect={(val) => {
+              setTargetValue(val);
+              setIsPlaying(true);
+            }}
+          />
+        </div>
+
+        <div className="h-28 border-t border-border flex flex-col justify-center bg-bg-primary z-10">
+          <PlaybackControls
+            isPlaying={isPlaying}
+            onPlayPause={handlePlayPause}
+            onNext={next}
+            onPrev={prev}
+            onReset={handleReset}
+            isFinished={currentIndex === totalSteps - 1}
+            isStart={currentIndex === 0}
+            speedMultiplier={speedMultiplier}
+            onSpeedChange={setSpeedMultiplier}
+          />
+        </div>
+      </section>
+    </div>
+  );
+}

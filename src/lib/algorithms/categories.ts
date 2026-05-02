@@ -16,6 +16,7 @@ export const CATEGORIES: Category[] = [
     icon: 'Search',
     description:
       'Algorithms that find an item with specified properties among a collection of items.',
+    defaultAlgorithmId: 'linear-search',
   },
   {
     id: 'graph-traversal',

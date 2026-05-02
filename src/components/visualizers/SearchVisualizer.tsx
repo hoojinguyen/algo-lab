@@ -11,10 +11,14 @@ interface TreeNode {
   left: TreeNode | null;
   right: TreeNode | null;
   depth: number;
-  x: number;
 }
 
-export function SearchVisualizer({ state }: { state: SearchAlgorithmState }) {
+interface SearchVisualizerProps {
+  state: SearchAlgorithmState;
+  onSelect?: (value: number) => void;
+}
+
+export function SearchVisualizer({ state, onSelect }: SearchVisualizerProps) {
   const { data, low, high, mid, targetIndex, eliminatedIndices, path, found } = state;
 
   // Build a balanced BST from the sorted array for visualization
@@ -31,7 +35,6 @@ export function SearchVisualizer({ state }: { state: SearchAlgorithmState }) {
         value: arr[midIdx],
         index: originalIndices[midIdx],
         depth,
-        x: 0, // In a real implementation, we'd calculate x for proper spacing
         left: buildTree(arr.slice(0, midIdx), originalIndices.slice(0, midIdx), depth + 1),
         right: buildTree(arr.slice(midIdx + 1), originalIndices.slice(midIdx + 1), depth + 1),
       };
@@ -41,77 +44,132 @@ export function SearchVisualizer({ state }: { state: SearchAlgorithmState }) {
     return buildTree(data, indices);
   }, [data]);
 
-  // Helper to render tree nodes recursively
-  const renderTree = (node: TreeNode | null) => {
-    if (!node) return null;
-
-    const isActive = node.index === mid;
-    const isVisited = path.includes(node.index);
-    const isTarget = node.index === targetIndex;
-    const isEliminated = eliminatedIndices.includes(node.index);
-
-    return (
-      <div className="flex flex-col items-center">
-        <motion.div
-          animate={{
-            scale: isActive ? 1.2 : 1,
-            opacity: isEliminated ? 0.3 : 1,
-          }}
-          className={`w-10 h-10 rounded-full border-2 flex items-center justify-center text-xs font-bold transition-colors duration-500 ${
-            isActive
-              ? 'bg-accent border-accent text-white shadow-lg shadow-accent/20'
-              : isTarget && found
-                ? 'bg-success/20 border-success text-success'
-                : isVisited
-                  ? 'bg-bg-tertiary border-accent/40 text-text-primary'
-                  : 'bg-bg-secondary border-border text-text-muted'
-          }`}
-        >
-          {node.value}
-        </motion.div>
-
-        <div className="flex gap-4 mt-4">
-          {node.left && (
-            <div className="flex flex-col items-center">
-              <div className="h-4 w-px bg-border mb-0" />
-              {renderTree(node.left)}
-            </div>
-          )}
-          {node.right && (
-            <div className="flex flex-col items-center">
-              <div className="h-4 w-px bg-border mb-0" />
-              {renderTree(node.right)}
-            </div>
-          )}
-        </div>
-      </div>
-    );
-  };
+  // Flatten tree for easier rendering with absolute positions
+  const flattenedNodes = useMemo(() => {
+    const nodes: TreeNode[] = [];
+    function traverse(node: TreeNode | null) {
+      if (!node) return;
+      nodes.push(node);
+      traverse(node.left);
+      traverse(node.right);
+    }
+    traverse(treeRoot);
+    return nodes;
+  }, [treeRoot]);
 
   return (
-    <div className="w-full h-full flex flex-col items-center justify-between gap-8 p-6 overflow-hidden">
-      {/* Target Key Display */}
-      <div className="flex flex-col items-center gap-1">
-        <span className="text-[9px] font-bold tracking-widest uppercase text-text-muted">
-          Target Key
-        </span>
-        <motion.div
-          key={state.targetValue}
-          initial={{ scale: 0.8, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          className="w-14 h-14 rounded-xl bg-bg-tertiary border border-accent/20 flex items-center justify-center text-xl font-bold text-accent shadow-sm shadow-accent/5"
-        >
-          {state.targetValue ?? '?'}
-        </motion.div>
+    <div className="w-full h-full flex flex-col items-center justify-between gap-8 p-6 overflow-hidden select-none">
+      {/* Header with Target Info */}
+      <div className="flex items-center gap-12">
+        <div className="flex flex-col items-center gap-1">
+          <span className="text-[9px] font-bold tracking-widest uppercase text-text-muted">
+            Target Key
+          </span>
+          <motion.div
+            key={state.targetValue}
+            initial={{ scale: 0.8, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            className={`w-14 h-14 rounded-xl border flex items-center justify-center text-xl font-bold shadow-sm transition-colors duration-500 ${
+              found
+                ? 'bg-success/10 border-success text-success shadow-success/10'
+                : 'bg-bg-tertiary border-accent/20 text-accent shadow-accent/5'
+            }`}
+          >
+            {state.targetValue ?? '?'}
+          </motion.div>
+        </div>
+
+        {state.targetValue === null && (
+          <motion.div
+            initial={{ opacity: 0, x: -10 }}
+            animate={{ opacity: 1, x: 0 }}
+            className="text-sm text-accent font-medium animate-pulse"
+          >
+            ← Click any value to start searching
+          </motion.div>
+        )}
       </div>
 
       {/* Tree Visualization (Logical View) */}
-      <div className="flex-1 w-full flex items-start justify-center overflow-auto custom-scrollbar pt-4">
-        <div className="scale-90 origin-top">{renderTree(treeRoot)}</div>
+      <div className="flex-1 w-full max-w-4xl relative mt-4">
+        {/* Render Connections first so they appear behind nodes */}
+        <svg className="absolute inset-0 w-full h-full pointer-events-none overflow-visible">
+          {flattenedNodes.map((node) => (
+            <React.Fragment key={`lines-${node.id}`}>
+              {[node.left, node.right].map((child, i) => {
+                if (!child) return null;
+                const x1 = `${(node.index / (data.length - 1)) * 100}%`;
+                const y1 = node.depth * 70 + 20;
+                const x2 = `${(child.index / (data.length - 1)) * 100}%`;
+                const y2 = child.depth * 70 + 20;
+
+                const isPath = path.includes(node.index) && path.includes(child.index);
+                const isEliminated = eliminatedIndices.includes(child.index);
+
+                return (
+                  <motion.line
+                    key={`line-${node.id}-${child.id}`}
+                    x1={x1}
+                    y1={y1}
+                    x2={x2}
+                    y2={y2}
+                    stroke={isPath ? 'var(--accent)' : 'var(--border)'}
+                    strokeWidth={isPath ? 2 : 1}
+                    initial={{ pathLength: 0, opacity: 0 }}
+                    animate={{
+                      pathLength: 1,
+                      opacity: isEliminated ? 0.1 : isPath ? 0.8 : 0.3,
+                    }}
+                    transition={{ duration: 0.5 }}
+                  />
+                );
+              })}
+            </React.Fragment>
+          ))}
+        </svg>
+
+        {/* Render Nodes */}
+        {flattenedNodes.map((node) => {
+          const isActive = node.index === mid;
+          const isVisited = path.includes(node.index);
+          const isTarget = node.index === targetIndex;
+          const isEliminated = eliminatedIndices.includes(node.index);
+          const xPos = (node.index / (data.length - 1)) * 100;
+          const yPos = node.depth * 70;
+
+          return (
+            <motion.div
+              key={node.id}
+              initial={false}
+              animate={{
+                left: `${xPos}%`,
+                top: `${yPos}px`,
+                scale: isActive ? 1.15 : 1,
+                opacity: isEliminated ? 0.2 : 1,
+              }}
+              className="absolute -translate-x-1/2 cursor-pointer z-10"
+              onClick={() => onSelect?.(node.value)}
+            >
+              <div
+                className={`w-10 h-10 rounded-full border-2 flex items-center justify-center text-xs font-bold transition-all duration-500 ${
+                  isActive
+                    ? 'bg-accent border-accent text-white shadow-lg shadow-accent/40'
+                    : isTarget && found
+                      ? 'bg-success border-success text-white shadow-lg shadow-success/40'
+                      : isVisited
+                        ? 'bg-bg-tertiary border-accent/40 text-text-primary'
+                        : 'bg-bg-secondary border-border text-text-muted hover:border-accent/50'
+                }`}
+              >
+                {node.value}
+              </div>
+            </motion.div>
+          );
+        })}
       </div>
 
       {/* Array Visualization (Physical View) */}
-      <div className="w-full max-w-4xl flex items-end justify-center gap-1.5 h-32 pt-8 border-t border-border/10">
+      <div className="w-full max-w-4xl flex items-end justify-between h-24 pt-4 border-t border-border/10">
         {data.map((val, idx) => {
           const isEliminated = eliminatedIndices.includes(idx);
           const isActive = idx === mid;
@@ -122,30 +180,31 @@ export function SearchVisualizer({ state }: { state: SearchAlgorithmState }) {
             <motion.div
               key={idx}
               layout
-              className="flex flex-col items-center gap-1.5"
+              className="flex-1 flex flex-col items-center gap-1 cursor-pointer group"
+              onClick={() => onSelect?.(val)}
               animate={{
                 opacity: isEliminated ? 0.3 : 1,
-                y: isEliminated ? 12 : 0,
+                y: isEliminated ? 8 : 0,
               }}
             >
               <motion.div
                 animate={{
-                  height: isActive ? '80px' : '64px',
+                  height: isActive ? '60px' : '48px',
                   backgroundColor: isActive
                     ? 'var(--accent)'
                     : isTarget && found
-                      ? 'rgba(var(--success-rgb), 0.2)'
+                      ? 'var(--success)'
                       : isInRange
                         ? 'var(--bg-tertiary)'
                         : 'var(--bg-secondary)',
                 }}
-                className={`w-10 flex items-center justify-center rounded-lg border transition-all duration-500 font-bold text-sm ${
+                className={`w-full max-w-[40px] flex items-center justify-center rounded-lg border transition-all duration-500 font-bold text-sm ${
                   isActive
                     ? 'text-white border-accent shadow-md shadow-accent/20 z-10'
                     : isTarget && found
-                      ? 'text-success border-success'
+                      ? 'text-white border-success'
                       : isInRange
-                        ? 'text-text-primary border-border'
+                        ? 'text-text-primary border-border group-hover:border-accent/40'
                         : 'text-text-muted border-transparent'
                 }`}
               >

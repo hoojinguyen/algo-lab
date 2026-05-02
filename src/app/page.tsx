@@ -3,6 +3,7 @@
 import { Activity, PlayCircle, Clock } from 'lucide-react';
 import Link from 'next/link';
 import { CATEGORIES } from '@/lib/algorithms/categories';
+import { ALGORITHM_REGISTRY } from '@/lib/algorithms/registry';
 import { useUserProgress } from '@/hooks/useUserProgress';
 
 function formatIdToName(id: string) {
@@ -86,12 +87,12 @@ export default function Home() {
                 </h2>
                 <div className="flex gap-4 overflow-x-auto no-scrollbar pb-2">
                   {progress.recentlyStudied.map((id) => {
-                    // For Phase 1 we fallback to sorting category for the link
-                    // Full mapping will be added when registry is complete
+                    const algo = ALGORITHM_REGISTRY[id];
+                    const categoryId = algo?.category || 'sorting';
                     return (
                       <Link
                         key={id}
-                        href={`/sorting/${id}`}
+                        href={`/${categoryId}/${id}`}
                         className="shrink-0 w-48 bg-bg-tertiary border border-border hover:border-text-muted rounded-lg p-4 transition-colors group"
                       >
                         <h3 className="font-medium text-sm mb-1 group-hover:text-accent transition-colors">
